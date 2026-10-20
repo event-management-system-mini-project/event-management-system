@@ -1,0 +1,6 @@
+body { margin: 0; background: #f4f5ef; color: #183c32; font: 17px/1.6 system-ui, sans-serif; }
+main { max-width: 760px; margin: 12vh auto; padding: 32px; }
+.eyebrow { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; }
+h1 { max-width: 600px; font-size: clamp(36px, 6vw, 56px); line-height: 1.12; }
+h2 { font-size: 20px; }
+section { margin-top: 40px; padding: 20px 28px; background: white; border: 1px solid #dbe2d8; border-radius: 12px; }

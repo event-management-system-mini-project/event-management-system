@@ -1,0 +1,18 @@
+from typing import Protocol
+from uuid import UUID
+
+from .models import Event, Organizer, Registration
+
+
+class EventStore(Protocol):
+    def get(self, event_id: UUID) -> Event: ...
+    def all(self) -> list[Event]: ...
+    def create(
+        self, *, organizer: Organizer, name: str, description: str,
+        date, time, location: str,
+    ) -> Event: ...
+
+
+class RegistrationStore(Protocol):
+    def for_event(self, event_id: UUID) -> list[Registration]: ...
+    def create(self, *, event: Event, name: str, email: str) -> Registration: ...

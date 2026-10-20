@@ -1,0 +1,81 @@
+{
+  "event_create_request": {
+    "name": "Synthetic Workshop",
+    "description": "Synthetic event for local integration.",
+    "date": "2099-10-25",
+    "time": "10:00:00",
+    "location": "Demo Hall"
+  },
+  "event_detail_response": {
+    "event": {
+      "id": "10000000-0000-4000-8000-000000000001",
+      "name": "Synthetic Workshop",
+      "description": "Synthetic event for local integration.",
+      "date": "2099-10-25",
+      "time": "10:00:00",
+      "location": "Demo Hall",
+      "registration_count": 1
+    }
+  },
+  "event_list_response": {
+    "events": [
+      {
+        "id": "10000000-0000-4000-8000-000000000001",
+        "name": "Synthetic Workshop",
+        "description": "Synthetic event for local integration.",
+        "date": "2099-10-25",
+        "time": "10:00:00",
+        "location": "Demo Hall",
+        "registration_count": 1
+      }
+    ]
+  },
+  "registration_request": {
+    "name": "Synthetic Attendee",
+    "email": "student@example.com"
+  },
+  "registration_success_response": {
+    "registration": {
+      "id": "20000000-0000-4000-8000-000000000001",
+      "event_id": "10000000-0000-4000-8000-000000000001"
+    },
+    "registration_count": 1
+  },
+  "owner_registrants_response": {
+    "registrants": [
+      {
+        "id": "20000000-0000-4000-8000-000000000001",
+        "name": "Synthetic Attendee",
+        "email": "student@example.com"
+      }
+    ],
+    "registration_count": 1
+  },
+  "delete_response": {
+    "deleted": true,
+    "event_id": "10000000-0000-4000-8000-000000000001"
+  },
+  "validation_error": {
+    "error": {
+      "code": "invalid_input",
+      "message": "Correct the invalid fields.",
+      "fields": {
+        "name": [
+          "This field is required."
+        ]
+      }
+    }
+  },
+  "unauthorized_error": {
+    "error": {
+      "code": "authentication_required",
+      "message": "Organizer authentication is required."
+    }
+  },
+  "duplicate_error": {
+    "error": {
+      "code": "duplicate_registration",
+      "message": "This email is already registered for this event."
+    }
+  }
+}

@@ -22,7 +22,7 @@ urlpatterns = [
     path("api/events", event_collection),
     path("api/", include("modules.organizer.urls")),
     path("api/", include("modules.browsing.urls")),
-    path("api/", include("modules.registration.urls")),
+    path("api/", include("events.urls")),
     re_path(r"^.*$", not_found),
 ]
 handler400 = "events.http.bad_request"

@@ -34,9 +34,10 @@ Press **Ctrl+C** to stop the three development services. Default addresses:
 | Django | 127.0.0.1:8000 | REST modules, verified authentication, validation and data access |
 | SQLite | data/events.sqlite3 | Local relational storage |
 
-This is a local development setup. The connection check is implemented;
-event-management screens and feature endpoints are added in their separate
-modules. There is no pretend event API or production identity-header bypass.
+The organizer workspace implements sign-in, sign-out, event creation and the
+organizer's own event list against the real Django session and SQLite database.
+Browsing, attendee registration and organizer edit/delete remain separate module
+work. There is no pretend event API or production identity-header bypass.
 
 ## Check the platform
 
@@ -47,11 +48,17 @@ npm run build
 npm run smoke
 ```
 
-The backend suite uses a disposable test database. It includes a separate-process
+The backend suites use a disposable test database. They include a separate-process
 file-database test for committed records surviving exit and pending writes rolling
-back after abrupt process termination. The smoke check migrates a fresh temporary
-database, seeds synthetic data, starts all three services, checks their real
-connection, and stops its own processes.
+back after abrupt process termination. The React suite covers validation, login,
+logout and event-form states. The smoke check migrates a fresh temporary database,
+seeds synthetic data, starts all three services, checks their real connection, and
+stops its own processes.
+
+Run only the organizer module with `npm run test:organizer`, or only the React
+tests with `npm run test:frontend`. See the
+[testing and review workflow](docs/testing.md) for commands, CI checks and the
+[result-log template](docs/test-results-template.md).
 
 To check migration consistency:
 

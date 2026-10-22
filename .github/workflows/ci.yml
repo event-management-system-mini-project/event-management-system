@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: Django platform and organizer module
+    runs-on: ubuntu-latest
+    env:
+      # Disposable CI values only. They are not production credentials and are
+      # never printed. Real databases and attendee data are never used here.
+      EMS_DEBUG: "1"
+      EMS_SECRET_KEY: "ci-only-organizer-secret-key-0123456789abcdef"
+      EMS_DEMO_PASSWORD: "ci-only-synthetic-password"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+      - name: Install backend dependencies
+        run: python -m pip install -r backend/requirements.txt
+      - name: Django system check
+        run: python backend/manage.py check
+      - name: Migration consistency
+        run: python backend/manage.py makemigrations --check --dry-run
+      - name: Platform tests
+        run: python backend/manage.py test events.tests --verbosity 2
+      - name: Organizer module tests in isolation
+        run: python backend/manage.py test modules.organizer --verbosity 2
+
+  node:
+    name: Gateway, React tests and production build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: Gateway tests
+        run: npm run test:gateway
+      - name: React validation and UI tests
+        run: npm run test:frontend
+      - name: Production build
+        run: npm run build
+
+  smoke:
+    name: Fresh-database end-to-end smoke
+    needs: [backend, node]
+    runs-on: ubuntu-latest
+    env:
+      EMS_DEBUG: "1"
+      EMS_SECRET_KEY: "ci-only-organizer-secret-key-0123456789abcdef"
+      EMS_DEMO_PASSWORD: "ci-only-synthetic-password"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install dependencies
+        run: |
+          python -m pip install -r backend/requirements.txt
+          npm ci
+      - name: React -> Node -> Django -> SQLite smoke test
+        run: python scripts/smoke.py

@@ -4,20 +4,49 @@ IDs are opaque UUID strings. Dates use YYYY-MM-DD, times use HH:mm:ss, and event
 date/time is interpreted in Asia/Kolkata. All API payloads use JSON.
 [Examples](api-examples.json) contain synthetic data only.
 
-The platform implements **GET /api/health**. The feature routes below are the
-agreed integration contract; they return safe 404 JSON until implemented in their
-feature modules. Their presence here is not a claim that the features are complete.
+The platform implements **GET /api/health** and the organizer module implements
+the authentication and event-creation routes below. The remaining feature routes
+are the agreed integration contract; they return safe 404 JSON until implemented
+in their feature modules. Their presence here is not a claim that the features
+are complete.
 
-| Method | Route | Successful status and response |
-| --- | --- | --- |
-| GET | /api/health | 200, {status: "ok", service: "django", database: "ok"} |
-| GET | /api/events | 200, {events: [...]} upcoming events, ascending date/time |
-| GET | /api/events/{id} | 200, {event: {..., registration_count}} |
-| POST | /api/events | 201, {event: {...}} after commit |
-| PUT | /api/events/{id} | 200, {event: {...}} |
-| DELETE | /api/events/{id} | 200, {deleted: true, event_id} |
-| POST | /api/events/{id}/registrations | 201, {registration: {id,event_id}, registration_count} after commit |
-| GET | /api/events/{id}/registrations | 200, {registrants: [{id,name,email}], registration_count} for the verified owner |
+## Organizer authentication
+
+Django's database-backed session cookie is the auth transport. The browser reads
+the `csrftoken` cookie set by `GET /api/auth/session` and sends it as
+`X-CSRFToken` on every POST. Login rotates the session and CSRF token.
+
+| Method | Route | Body | Successful response |
+| --- | --- | --- | --- |
+| GET | /api/auth/session | — | 200, `{organizer: {id, username}}` or `{organizer: null}`; sets CSRF cookie |
+| POST | /api/auth/login | `{username, password}` | 200, `{organizer: {id, username}}`; sets session cookie |
+| POST | /api/auth/logout | — | 200, `{logged_out: true}`; ends the session |
+
+Unknown accounts, inactive accounts and wrong passwords all return
+`401 {error: {code: "invalid_credentials", message: "The username or password is incorrect."}}`.
+Login and logout are CSRF-protected. The API never returns a password, session key
+or organizer ID taken from the request body or headers.
+
+## Events
+
+| Method | Route | Body | Successful status and response |
+| --- | --- | --- | --- |
+| GET | /api/health | — | 200, {status: "ok", service: "django", database: "ok"} |
+| GET | /api/events | — | 200, {events: [...]} upcoming events, ascending date/time |
+| GET | /api/events/{id} | — | 200, {event: {..., registration_count}} |
+| POST | /api/events | name, description, date, time, location | 201, {event: {...}} after commit; organizer from verified session |
+| GET | /api/organizer/events | — | 200, {events: [...]} only the verified organizer's events |
+| PUT | /api/events/{id} | name, description, date, time, location | 200, {event: {...}} |
+| DELETE | /api/events/{id} | — | 200, {deleted: true, event_id} |
+| POST | /api/events/{id}/registrations | name, email | 201, {registration: {id,event_id}, registration_count} after commit |
+| GET | /api/events/{id}/registrations | — | 200, {registrants: [{id,name,email}], registration_count} for the verified owner |
+
+`POST /api/events` requires an authenticated organizer and validates name
+(1–100 characters), description (1–1000), location (non-empty) and a future
+date/time in Asia/Kolkata. Invalid fields return 400 with a `fields` object.
+A database or commit failure returns 503 `database_unavailable` and no event is
+reported as created. Any submitted `organizer_id` is ignored; the session identity
+always owns the event.
 
 Create/edit bodies contain name, description, date, time and location.
 The backend takes organizer identity from verified Django authentication, never
@@ -40,7 +69,7 @@ to arrays of validation messages. Do not expose SQL, exceptions, passwords or se
 | 409 | Duplicate event/email registration |
 | 500 | Unexpected internal failure |
 | 502 | Gateway cannot reach the Django service |
-| 503 | Database health check unavailable |
+| 503 | Database health check unavailable, or an event write could not be committed |
 
 Django session cookies and CSRF validation are the auth transport baseline.
 Login/logout route details belong to the organizer module; the platform's

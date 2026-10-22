@@ -1,13 +1,16 @@
 from django.urls import include, path, re_path
 from events.http import health, not_found
 from modules.organizer.event_views import create_event
+from modules.browsing.views import list_upcoming_events
 
 # GET /api/events belongs to the browsing module; POST belongs to the organizer
 # module. Django resolves URLs by path rather than method, so this collection
-# route composes both modules at one integration point. Add GET here when the
-# browsing module provides its real handler. Unimplemented methods stay 404,
-# matching the documented "not implemented yet" contract.
-EVENT_COLLECTION = {"POST": create_event}
+# route composes both modules at one integration point. Unsupported methods
+# return the standard not-found response.
+EVENT_COLLECTION = {
+    "GET": list_upcoming_events,
+    "POST": create_event,
+}
 
 
 def event_collection(request):

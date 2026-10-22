@@ -26,6 +26,11 @@ class DjangoEventStore:
     def all(self):
         return list(Event.objects.all())
 
+    def for_organizer(self, organizer):
+        return list(
+            Event.objects.filter(organizer=organizer).order_by("date", "time", "created_at", "id")
+        )
+
     def create(self, *, organizer, name, description, date, time, location):
         return committed_write(lambda: Event.objects.create(
             organizer=organizer, name=name, description=description,

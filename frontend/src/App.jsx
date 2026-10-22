@@ -118,6 +118,7 @@ export default function App({ api = defaultApi }) {
   useEffect(() => {
     let active = true;
     setBootError("");
+    setSession(undefined);
     api
       .getSession()
       .then((data) => {

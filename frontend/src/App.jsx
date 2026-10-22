@@ -1,17 +1,26 @@
+
 import React, { useCallback, useEffect, useState } from "react";
 
 import * as defaultApi from "./api.js";
 import EventForm from "./components/EventForm.jsx";
 import EventList from "./components/EventList.jsx";
 import LoginForm from "./components/LoginForm.jsx";
+import UpcomingEvents from "./components/UpcomingEvents.jsx";
 
 function sortEvents(events) {
   return [...events].sort((left, right) =>
-    `${left.date}T${left.time}`.localeCompare(`${right.date}T${right.time}`),
+    `${left.date}T${left.time}`.localeCompare(
+      `${right.date}T${right.time}`,
+    ),
   );
 }
 
-function OrganizerDashboard({ api, organizer, onSignedOut, onSessionExpired }) {
+function OrganizerDashboard({
+  api,
+  organizer,
+  onSignedOut,
+  onSessionExpired,
+}) {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
@@ -21,6 +30,7 @@ function OrganizerDashboard({ api, organizer, onSignedOut, onSessionExpired }) {
   const loadEvents = useCallback(async () => {
     setLoading(true);
     setLoadError("");
+
     try {
       const data = await api.listOwnEvents();
       setEvents(sortEvents(data.events || []));
@@ -29,6 +39,7 @@ function OrganizerDashboard({ api, organizer, onSignedOut, onSessionExpired }) {
         onSessionExpired();
         return;
       }
+
       setLoadError(error.message || "Your events could not be loaded.");
     } finally {
       setLoading(false);
@@ -48,12 +59,16 @@ function OrganizerDashboard({ api, organizer, onSignedOut, onSessionExpired }) {
   async function handleLogout() {
     setLogoutError("");
     setLogoutBusy(true);
+
     try {
       await api.logout();
       onSignedOut();
     } catch (error) {
-      if (error.status === 401) onSessionExpired();
-      else setLogoutError(error.message || "Sign out failed. Try again.");
+      if (error.status === 401) {
+        onSessionExpired();
+      } else {
+        setLogoutError(error.message || "Sign out failed. Try again.");
+      }
     } finally {
       setLogoutBusy(false);
     }
@@ -61,13 +76,17 @@ function OrganizerDashboard({ api, organizer, onSignedOut, onSessionExpired }) {
 
   return (
     <>
-      <section className="dashboard-intro" aria-labelledby="dashboard-heading">
+      <section
+        className="dashboard-intro"
+        aria-labelledby="dashboard-heading"
+      >
         <p className="eyebrow">Organizer workspace</p>
         <h1 id="dashboard-heading">Plan the next gathering.</h1>
         <p className="lede">
-          Signed in as <strong>{organizer.username}</strong>. Events are tied to
-          your verified account.
+          Signed in as <strong>{organizer.username}</strong>. Events are tied
+          to your verified account.
         </p>
+
         {logoutError ? (
           <p className="form-alert" role="alert">
             {logoutError}
@@ -80,6 +99,7 @@ function OrganizerDashboard({ api, organizer, onSignedOut, onSessionExpired }) {
           onCreate={handleCreate}
           onSessionExpired={onSessionExpired}
         />
+
         <EventList
           events={events}
           loading={loading}
@@ -92,10 +112,11 @@ function OrganizerDashboard({ api, organizer, onSignedOut, onSessionExpired }) {
         <div>
           <h2 id="account-heading">Account</h2>
           <p className="muted">
-            Signing out ends this server session and removes access to protected
-            event actions.
+            Signing out ends this server session and removes access to
+            protected event actions.
           </p>
         </div>
+
         <button
           className="button secondary"
           type="button"
@@ -117,18 +138,26 @@ export default function App({ api = defaultApi }) {
 
   useEffect(() => {
     let active = true;
+
     setBootError("");
     setSession(undefined);
+
     api
       .getSession()
       .then((data) => {
-        if (active) setSession(data.organizer || null);
+        if (active) {
+          setSession(data.organizer || null);
+        }
       })
       .catch((error) => {
         if (!active) return;
-        setBootError(error.message || "The organizer session could not be loaded.");
+
+        setBootError(
+          error.message || "The organizer session could not be loaded.",
+        );
         setSession(null);
       });
+
     return () => {
       active = false;
     };
@@ -171,9 +200,14 @@ export default function App({ api = defaultApi }) {
         ) : null}
 
         {bootError ? (
-          <section className="auth-panel" aria-labelledby="boot-error-heading">
+          <section
+            className="auth-panel"
+            aria-labelledby="boot-error-heading"
+          >
             <p className="eyebrow">Connection problem</p>
-            <h1 id="boot-error-heading">The organizer service is unavailable</h1>
+            <h1 id="boot-error-heading">
+              The organizer service is unavailable
+            </h1>
             <p className="lede" role="alert">
               {bootError}
             </p>
@@ -186,6 +220,9 @@ export default function App({ api = defaultApi }) {
             </button>
           </section>
         ) : null}
+
+        {/* Public upcoming events are available without signing in. */}
+        {!bootError ? <UpcomingEvents api={api} /> : null}
 
         {session === null && !bootError ? (
           <div className="auth-wrap">

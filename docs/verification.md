@@ -135,6 +135,7 @@ Vitest 5.0.5. Commands are listed in the [testing workflow](testing.md).
 | `makemigrations --check --dry-run` | Passed; no model changes missing migrations |
 | `npm run build` | Passed; production assets generated |
 | `npm run smoke` | Passed with a fresh temporary SQLite database through React, Node gateway and Django |
+| GitHub Actions CI | All three jobs passed on the Sprint 2 branch/PR: [run 39909030428](https://github.com/event-management-system-mini-project/project-documentation/actions/runs/39909030428) |
 
 ## Edit and delete evidence
 

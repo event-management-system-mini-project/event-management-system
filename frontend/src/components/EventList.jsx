@@ -12,7 +12,14 @@ function formatDate(isoDate) {
   return `${Number(parts[3])} ${month} ${parts[1]}`;
 }
 
-export default function EventList({ events, loading, error, onRetry }) {
+export default function EventList({
+  events,
+  loading,
+  error,
+  onRetry,
+  onEdit,
+  onDelete,
+}) {
   return (
     <section className="panel" aria-labelledby="events-heading">
       <div className="panel-heading">
@@ -59,11 +66,31 @@ export default function EventList({ events, loading, error, onRetry }) {
                 <h3>{event.name}</h3>
                 <p className="event-location">{event.location}</p>
                 <p className="event-description">{event.description}</p>
-                <p className="event-meta">
-                  {event.registration_count === 1
-                    ? "1 registration"
-                    : `${event.registration_count} registrations`}
-                </p>
+                <div className="event-footer">
+                  <p className="event-meta">
+                    {event.registration_count === 1
+                      ? "1 registration"
+                      : `${event.registration_count} registrations`}
+                  </p>
+                  <div className="event-actions">
+                    <button
+                      className="text-button"
+                      type="button"
+                      onClick={() => onEdit(event)}
+                      aria-label={`Edit ${event.name}`}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="text-button danger-text"
+                      type="button"
+                      onClick={() => onDelete(event)}
+                      aria-label={`Delete ${event.name}`}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
               </div>
             </li>
           ))}

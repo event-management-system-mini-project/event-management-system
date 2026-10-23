@@ -2,6 +2,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 
 import * as defaultApi from "./api.js";
+import ConfirmDelete from "./components/ConfirmDelete.jsx";
 import EventForm from "./components/EventForm.jsx";
 import EventList from "./components/EventList.jsx";
 import LoginForm from "./components/LoginForm.jsx";
@@ -20,12 +21,17 @@ function OrganizerDashboard({
   organizer,
   onSignedOut,
   onSessionExpired,
+  onEventsChanged,
 }) {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
   const [logoutError, setLogoutError] = useState("");
   const [logoutBusy, setLogoutBusy] = useState(false);
+  const [editingEvent, setEditingEvent] = useState(null);
+  const [pendingDelete, setPendingDelete] = useState(null);
+  const [deleteBusy, setDeleteBusy] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
 
   const loadEvents = useCallback(async () => {
     setLoading(true);
@@ -50,10 +56,53 @@ function OrganizerDashboard({
     loadEvents();
   }, [loadEvents]);
 
-  async function handleCreate(values) {
+  async function handleSave(values) {
+    if (editingEvent) {
+      const data = await api.updateEvent(editingEvent.id, values);
+      setEvents((current) =>
+        sortEvents(
+          current.map((item) => (item.id === data.event.id ? data.event : item)),
+        ),
+      );
+      setEditingEvent(null);
+      onEventsChanged();
+      return data.event;
+    }
+
     const data = await api.createEvent(values);
     setEvents((current) => sortEvents([...current, data.event]));
+    onEventsChanged();
     return data.event;
+  }
+
+  function requestDelete(event) {
+    setDeleteError("");
+    setPendingDelete(event);
+  }
+
+  async function handleDelete() {
+    if (!pendingDelete) return;
+    setDeleteError("");
+    setDeleteBusy(true);
+    try {
+      await api.deleteEvent(pendingDelete.id);
+      setEvents((current) =>
+        current.filter((item) => item.id !== pendingDelete.id),
+      );
+      if (editingEvent?.id === pendingDelete.id) setEditingEvent(null);
+      setPendingDelete(null);
+      onEventsChanged();
+    } catch (error) {
+      if (error.status === 401) {
+        onSessionExpired();
+        return;
+      }
+      setDeleteError(
+        error.message || "The event could not be deleted. Nothing was removed.",
+      );
+    } finally {
+      setDeleteBusy(false);
+    }
   }
 
   async function handleLogout() {
@@ -96,7 +145,10 @@ function OrganizerDashboard({
 
       <div className="dashboard-grid">
         <EventForm
-          onCreate={handleCreate}
+          mode={editingEvent ? "edit" : "create"}
+          event={editingEvent}
+          onSave={handleSave}
+          onCancel={() => setEditingEvent(null)}
           onSessionExpired={onSessionExpired}
         />
 
@@ -105,8 +157,22 @@ function OrganizerDashboard({
           loading={loading}
           error={loadError}
           onRetry={loadEvents}
+          onEdit={setEditingEvent}
+          onDelete={requestDelete}
         />
       </div>
+
+      {pendingDelete ? (
+        <ConfirmDelete
+          event={pendingDelete}
+          busy={deleteBusy}
+          error={deleteError}
+          onCancel={() => {
+            if (!deleteBusy) setPendingDelete(null);
+          }}
+          onConfirm={handleDelete}
+        />
+      ) : null}
 
       <section className="account-panel" aria-labelledby="account-heading">
         <div>
@@ -135,6 +201,7 @@ export default function App({ api = defaultApi }) {
   const [bootError, setBootError] = useState("");
   const [notice, setNotice] = useState("");
   const [attempt, setAttempt] = useState(0);
+  const [eventsVersion, setEventsVersion] = useState(0);
 
   useEffect(() => {
     let active = true;
@@ -182,6 +249,10 @@ export default function App({ api = defaultApi }) {
     setNotice("You have signed out.");
   }, []);
 
+  const handleEventsChanged = useCallback(() => {
+    setEventsVersion((current) => current + 1);
+  }, []);
+
   return (
     <div className="app-shell">
       <header className="site-header">
@@ -222,7 +293,9 @@ export default function App({ api = defaultApi }) {
         ) : null}
 
         {/* Public upcoming events are available without signing in. */}
-        {!bootError ? <UpcomingEvents api={api} /> : null}
+        {!bootError ? (
+          <UpcomingEvents api={api} refreshKey={eventsVersion} />
+        ) : null}
 
         {session === null && !bootError ? (
           <div className="auth-wrap">
@@ -241,6 +314,7 @@ export default function App({ api = defaultApi }) {
             organizer={session}
             onSignedOut={handleSignedOut}
             onSessionExpired={handleSessionExpired}
+            onEventsChanged={handleEventsChanged}
           />
         ) : null}
       </main>

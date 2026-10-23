@@ -1,4 +1,4 @@
-import React, { useId, useState } from "react";
+import React, { useEffect, useId, useState } from "react";
 
 import {
   DESCRIPTION_LIMIT,
@@ -16,6 +16,17 @@ const EMPTY_VALUES = {
   location: "",
 };
 
+function valuesFromEvent(event) {
+  if (!event) return EMPTY_VALUES;
+  return {
+    name: event.name,
+    description: event.description,
+    date: event.date,
+    time: event.time.slice(0, 5),
+    location: event.location,
+  };
+}
+
 function todayIso() {
   const today = new Date();
   const month = String(today.getMonth() + 1).padStart(2, "0");
@@ -27,13 +38,27 @@ function characterCount(value) {
   return [...value.trim()].length;
 }
 
-export default function EventForm({ onCreate, onSessionExpired }) {
+export default function EventForm({
+  mode = "create",
+  event = null,
+  onSave,
+  onCancel,
+  onSessionExpired,
+}) {
   const fieldId = useId();
-  const [values, setValues] = useState(EMPTY_VALUES);
+  const editing = mode === "edit";
+  const [values, setValues] = useState(() => valuesFromEvent(event));
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState("");
   const [savedName, setSavedName] = useState("");
   const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    setValues(valuesFromEvent(event));
+    setErrors({});
+    setFormError("");
+    setSavedName("");
+  }, [event?.id, mode]);
 
   function update(field, value) {
     setValues((current) => ({ ...current, [field]: value }));
@@ -53,8 +78,8 @@ export default function EventForm({ onCreate, onSessionExpired }) {
     if (first) globalThis.document?.getElementById(`${fieldId}-${first}`)?.focus();
   }
 
-  async function handleSubmit(event) {
-    event.preventDefault();
+  async function handleSubmit(submitEvent) {
+    submitEvent.preventDefault();
     setFormError("");
     setSavedName("");
 
@@ -67,8 +92,8 @@ export default function EventForm({ onCreate, onSessionExpired }) {
 
     setBusy(true);
     try {
-      const saved = await onCreate(normalizedEventValues(values));
-      setValues(EMPTY_VALUES);
+      const saved = await onSave(normalizedEventValues(values));
+      if (!editing) setValues(EMPTY_VALUES);
       setErrors({});
       setSavedName(saved.name);
     } catch (error) {
@@ -81,7 +106,10 @@ export default function EventForm({ onCreate, onSessionExpired }) {
         focusFirstError(error.fields);
       } else {
         setFormError(
-          error.message || "The event could not be saved. Nothing was confirmed.",
+          error.message ||
+            (editing
+              ? "The event could not be updated. Your changes were not saved."
+              : "The event could not be saved. Nothing was confirmed."),
         );
       }
     } finally {
@@ -94,15 +122,17 @@ export default function EventForm({ onCreate, onSessionExpired }) {
   const dateError = errors.date?.[0];
   const timeError = errors.time?.[0];
   const locationError = errors.location?.[0];
+  const headingId = `${fieldId}-heading`;
 
   return (
-    <section className="panel" aria-labelledby="create-heading">
+    <section className="panel" aria-labelledby={headingId}>
       <div className="panel-heading">
-        <p className="eyebrow">New event</p>
-        <h2 id="create-heading">Create an event</h2>
+        <p className="eyebrow">{editing ? "Edit event" : "New event"}</p>
+        <h2 id={headingId}>{editing ? "Edit event" : "Create an event"}</h2>
         <p className="panel-intro">
-          Save the details once. The event appears in your list after the database
-          confirms the write.
+          {editing
+            ? "Update the details. Changes appear after the database confirms the write."
+            : "Save the details once. The event appears in your list after the database confirms the write."}
         </p>
       </div>
 
@@ -114,7 +144,9 @@ export default function EventForm({ onCreate, onSessionExpired }) {
         ) : null}
         {savedName ? (
           <p className="form-success" role="status">
-            Saved “{savedName}”. It is now in your event list.
+            {editing
+              ? `Updated “${savedName}”.`
+              : `Saved “${savedName}”. It is now in your event list.`}
           </p>
         ) : null}
 
@@ -129,7 +161,7 @@ export default function EventForm({ onCreate, onSessionExpired }) {
             id={`${fieldId}-name`}
             name="name"
             value={values.name}
-            onChange={(event) => update("name", event.target.value)}
+            onChange={(inputEvent) => update("name", inputEvent.target.value)}
             aria-invalid={nameError ? "true" : undefined}
             aria-describedby={`${fieldId}-name-hint${nameError ? ` ${fieldId}-name-error` : ""}`}
           />
@@ -155,7 +187,9 @@ export default function EventForm({ onCreate, onSessionExpired }) {
             name="description"
             rows={4}
             value={values.description}
-            onChange={(event) => update("description", event.target.value)}
+            onChange={(inputEvent) =>
+              update("description", inputEvent.target.value)
+            }
             aria-invalid={descriptionError ? "true" : undefined}
             aria-describedby={`${fieldId}-description-hint${descriptionError ? ` ${fieldId}-description-error` : ""}`}
           />
@@ -178,7 +212,7 @@ export default function EventForm({ onCreate, onSessionExpired }) {
               type="date"
               min={todayIso()}
               value={values.date}
-              onChange={(event) => update("date", event.target.value)}
+              onChange={(inputEvent) => update("date", inputEvent.target.value)}
               aria-invalid={dateError ? "true" : undefined}
               aria-describedby={dateError ? `${fieldId}-date-error` : undefined}
             />
@@ -196,7 +230,7 @@ export default function EventForm({ onCreate, onSessionExpired }) {
               name="time"
               type="time"
               value={values.time}
-              onChange={(event) => update("time", event.target.value)}
+              onChange={(inputEvent) => update("time", inputEvent.target.value)}
               aria-invalid={timeError ? "true" : undefined}
               aria-describedby={timeError ? `${fieldId}-time-error` : undefined}
             />
@@ -214,9 +248,13 @@ export default function EventForm({ onCreate, onSessionExpired }) {
             id={`${fieldId}-location`}
             name="location"
             value={values.location}
-            onChange={(event) => update("location", event.target.value)}
+            onChange={(inputEvent) =>
+              update("location", inputEvent.target.value)
+            }
             aria-invalid={locationError ? "true" : undefined}
-            aria-describedby={locationError ? `${fieldId}-location-error` : undefined}
+            aria-describedby={
+              locationError ? `${fieldId}-location-error` : undefined
+            }
           />
           {locationError ? (
             <p className="field-error" id={`${fieldId}-location-error`}>
@@ -225,9 +263,25 @@ export default function EventForm({ onCreate, onSessionExpired }) {
           ) : null}
         </div>
 
-        <button className="button" type="submit" disabled={busy}>
-          {busy ? "Saving..." : "Create event"}
-        </button>
+        <div className="form-actions">
+          <button className="button" type="submit" disabled={busy}>
+            {busy
+              ? "Saving..."
+              : editing
+                ? "Save changes"
+                : "Create event"}
+          </button>
+          {editing ? (
+            <button
+              className="button secondary"
+              type="button"
+              onClick={onCancel}
+              disabled={busy}
+            >
+              Cancel
+            </button>
+          ) : null}
+        </div>
       </form>
     </section>
   );

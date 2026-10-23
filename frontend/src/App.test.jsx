@@ -1,5 +1,5 @@
 
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
@@ -14,6 +14,8 @@ function makeApi(overrides = {}) {
     listOwnEvents: vi.fn().mockResolvedValue({ events: [] }),
     listUpcomingEvents: vi.fn().mockResolvedValue({ events: [] }),
     createEvent: vi.fn(),
+    updateEvent: vi.fn(),
+    deleteEvent: vi.fn(),
     ...overrides,
   };
 }
@@ -327,5 +329,216 @@ describe("organizer event creation", () => {
     ).toBeInTheDocument();
 
     expect(api.createEvent).not.toHaveBeenCalled();
+  });
+});
+
+
+describe("organizer event editing", () => {
+  it("prefills the edit form and updates the owned event", async () => {
+    const user = userEvent.setup();
+    const updated = {
+      ...SAVED_EVENT,
+      name: "Updated Meetup",
+      location: "New Hall",
+    };
+
+    const api = makeApi({
+      getSession: vi.fn().mockResolvedValue({ organizer: ORGANIZER }),
+      listOwnEvents: vi.fn().mockResolvedValue({ events: [SAVED_EVENT] }),
+      updateEvent: vi.fn().mockResolvedValue({ event: updated }),
+    });
+
+    render(<App api={api} />);
+
+    await screen.findByRole("heading", { name: "Spring Meetup" });
+    await user.click(
+      screen.getByRole("button", { name: "Edit Spring Meetup" }),
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Edit event" }),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Event name")).toHaveValue("Spring Meetup");
+    expect(screen.getByLabelText("Location")).toHaveValue("Town Hall");
+
+    fireEvent.change(screen.getByLabelText("Event name"), {
+      target: { value: "Updated Meetup" },
+    });
+    fireEvent.change(screen.getByLabelText("Location"), {
+      target: { value: "New Hall" },
+    });
+
+    await user.click(screen.getByRole("button", { name: "Save changes" }));
+
+    expect(api.updateEvent).toHaveBeenCalledWith("event-1", {
+      name: "Updated Meetup",
+      description: "A synthetic event.",
+      date: "2099-05-20",
+      time: "10:00",
+      location: "New Hall",
+    });
+
+    expect(
+      await screen.findByRole("heading", { name: "Updated Meetup" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Create an event" }),
+    ).toBeInTheDocument();
+    await waitFor(() =>
+      expect(api.listUpcomingEvents).toHaveBeenCalledTimes(2),
+    );
+  });
+
+  it("cancels editing without saving and restores the create form", async () => {
+    const user = userEvent.setup();
+    const api = makeApi({
+      getSession: vi.fn().mockResolvedValue({ organizer: ORGANIZER }),
+      listOwnEvents: vi.fn().mockResolvedValue({ events: [SAVED_EVENT] }),
+    });
+
+    render(<App api={api} />);
+
+    await screen.findByRole("heading", { name: "Spring Meetup" });
+    await user.click(
+      screen.getByRole("button", { name: "Edit Spring Meetup" }),
+    );
+    await screen.findByRole("heading", { name: "Edit event" });
+
+    await user.click(screen.getByRole("button", { name: "Cancel" }));
+
+    expect(
+      screen.getByRole("heading", { name: "Create an event" }),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Event name")).toHaveValue("");
+    expect(api.updateEvent).not.toHaveBeenCalled();
+  });
+
+  it("shows server field errors in the edit form and keeps the event", async () => {
+    const user = userEvent.setup();
+    const api = makeApi({
+      getSession: vi.fn().mockResolvedValue({ organizer: ORGANIZER }),
+      listOwnEvents: vi.fn().mockResolvedValue({ events: [SAVED_EVENT] }),
+      updateEvent: vi.fn().mockRejectedValue(
+        new ApiError("Correct the invalid fields.", {
+          status: 400,
+          code: "invalid_input",
+          fields: { name: ["This field is required."] },
+        }),
+      ),
+    });
+
+    render(<App api={api} />);
+
+    await screen.findByRole("heading", { name: "Spring Meetup" });
+    await user.click(
+      screen.getByRole("button", { name: "Edit Spring Meetup" }),
+    );
+    await screen.findByRole("heading", { name: "Edit event" });
+
+    fireEvent.change(screen.getByLabelText("Event name"), {
+      target: { value: "Still a valid client value" },
+    });
+    await user.click(screen.getByRole("button", { name: "Save changes" }));
+
+    expect(
+      await screen.findByText("This field is required."),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Edit event" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Spring Meetup" }),
+    ).toBeInTheDocument();
+  });
+});
+
+describe("organizer event deletion", () => {
+  async function openDeleteConfirmation(user) {
+    await screen.findByRole("heading", { name: "Spring Meetup" });
+    await user.click(
+      screen.getByRole("button", { name: "Delete Spring Meetup" }),
+    );
+    return screen.findByRole("dialog", {
+      name: /Delete “Spring Meetup”/,
+    });
+  }
+
+  function authenticatedApi(overrides = {}) {
+    return makeApi({
+      getSession: vi.fn().mockResolvedValue({ organizer: ORGANIZER }),
+      listOwnEvents: vi.fn().mockResolvedValue({ events: [SAVED_EVENT] }),
+      ...overrides,
+    });
+  }
+
+  it("requires explicit confirmation and can be cancelled", async () => {
+    const user = userEvent.setup();
+    const api = authenticatedApi();
+
+    render(<App api={api} />);
+
+    const dialog = await openDeleteConfirmation(user);
+    expect(dialog).toHaveTextContent("all of its registrations");
+
+    await user.click(within(dialog).getByRole("button", { name: "Cancel" }));
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(api.deleteEvent).not.toHaveBeenCalled();
+    expect(
+      screen.getByRole("heading", { name: "Spring Meetup" }),
+    ).toBeInTheDocument();
+  });
+
+  it("removes the event only after the delete API confirms", async () => {
+    const user = userEvent.setup();
+    const api = authenticatedApi({
+      deleteEvent: vi.fn().mockResolvedValue({
+        deleted: true,
+        event_id: "event-1",
+      }),
+    });
+
+    render(<App api={api} />);
+
+    const dialog = await openDeleteConfirmation(user);
+    await user.click(
+      within(dialog).getByRole("button", { name: "Delete event" }),
+    );
+
+    expect(api.deleteEvent).toHaveBeenCalledWith("event-1");
+    expect(await screen.findByText("No events yet")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "Spring Meetup" }),
+    ).not.toBeInTheDocument();
+    await waitFor(() =>
+      expect(api.listUpcomingEvents).toHaveBeenCalledTimes(2),
+    );
+  });
+
+  it("keeps the event and shows an error when deletion fails", async () => {
+    const user = userEvent.setup();
+    const api = authenticatedApi({
+      deleteEvent: vi.fn().mockRejectedValue(
+        new ApiError("The event could not be deleted. Try again.", {
+          status: 503,
+          code: "database_unavailable",
+        }),
+      ),
+    });
+
+    render(<App api={api} />);
+
+    const dialog = await openDeleteConfirmation(user);
+    await user.click(
+      within(dialog).getByRole("button", { name: "Delete event" }),
+    );
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "The event could not be deleted. Try again.",
+    );
+    expect(
+      screen.getByRole("heading", { name: "Spring Meetup" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
   });
 });

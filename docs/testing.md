@@ -18,6 +18,7 @@ disposable test database, so local event data is not modified.
 | Command | Scope |
 | --- | --- |
 | `npm run test:organizer` | Real organizer handlers only: session/login/logout, CSRF, protected-action denial, event validation, owner isolation, commit failure |
+| `npm run test:registration` | Registration route success, duplicate prevention, missing input and unknown events |
 | `npm run test:backend` | Platform models, repositories and authentication adapter |
 | `npm run test:gateway` | Node gateway forwarding and identity-header stripping |
 | `npm run test:frontend` | React validation, login/logout, event form and failure-state tests |

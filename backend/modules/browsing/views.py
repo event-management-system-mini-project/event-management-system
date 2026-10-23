@@ -52,3 +52,45 @@ def list_upcoming_events(request):
         )
 
     return JsonResponse({"events": results})
+
+def get_event_details(request, event_id):
+    if request.method != "GET":
+        response = error_response(
+            "method_not_allowed",
+            "Use GET for this resource.",
+            405,
+        )
+        response["Allow"] = "GET"
+        return response
+
+    try:
+        event = (
+            Event.objects.filter(id=event_id)
+            .annotate(registration_count=Count("registrations"))
+            .first()
+        )
+    except DatabaseError:
+        return error_response(
+            "unavailable",
+            "Event details could not be loaded right now.",
+            503,
+        )
+
+    if event is None:
+        return error_response(
+            "not_found",
+            "The requested event does not exist.",
+            404,
+        )
+
+    return JsonResponse({
+        "event": {
+            "id": str(event.id),
+            "name": event.name,
+            "description": event.description,
+            "date": event.date.isoformat(),
+            "time": event.time.isoformat(),
+            "location": event.location,
+            "registration_count": event.registration_count,
+        }
+    })

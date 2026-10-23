@@ -11,6 +11,8 @@ from datetime import timedelta
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 
+from events.models import Event, Registration
+
 PASSWORD = "synthetic-organizer-password"
 
 
@@ -37,3 +39,11 @@ def event_payload(**changes):
 
 def json_body(payload):
     return json.dumps(payload)
+
+
+def make_event(organizer, **changes):
+    return Event.objects.create(organizer=organizer, **event_payload(**changes))
+
+
+def make_registration(event, name="Synthetic Attendee", email="attendee@example.com"):
+    return Registration.objects.create(event=event, name=name, email=email)

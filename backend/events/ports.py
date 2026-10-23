@@ -12,6 +12,11 @@ class EventStore(Protocol):
         self, *, organizer: Organizer, name: str, description: str,
         date, time, location: str,
     ) -> Event: ...
+    def update(
+        self, event: Event, *, name: str, description: str,
+        date, time, location: str,
+    ) -> Event: ...
+    def delete(self, event: Event) -> None: ...
 
 
 class RegistrationStore(Protocol):

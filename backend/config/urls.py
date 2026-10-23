@@ -5,7 +5,11 @@ from modules.organizer.event_views import (
     delete_event,
     update_event,
 )
-from modules.browsing.views import list_upcoming_events
+
+from modules.browsing.views import (
+    get_event_details,
+    list_upcoming_events,
+)
 
 # GET /api/events belongs to the browsing module; POST belongs to the organizer
 # module. Django resolves URLs by path rather than method, so this collection
@@ -27,6 +31,7 @@ def event_collection(request):
 # GET /api/events/{id} belongs to the browsing module. PUT and DELETE belong to
 # the organizer module, so the detail route uses the same method dispatch.
 EVENT_ITEM = {
+    "GET": get_event_details,
     "PUT": update_event,
     "DELETE": delete_event,
 }
@@ -52,3 +57,4 @@ handler400 = "events.http.bad_request"
 handler403 = "events.http.forbidden"
 handler404 = "events.http.not_found"
 handler500 = "events.http.server_error"
+

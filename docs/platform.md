@@ -69,14 +69,17 @@ Django-authenticated user. The custom Organizer uses Django's password hashing,
 session backend, authentication middleware and CSRF middleware. User IDs from
 request bodies, URLs or headers never establish identity.
 The Node gateway strips identity-spoofing and forwarding headers rather than
-trusting them. The organizer module implements session/login/logout and uses the
-same permission decorator for create and list. Owner checks for edit/delete are
-Sprint 2 work and must use the same adapter.
+trusting them. The organizer module implements session/login/logout and uses the same permission
+decorator for create, list, edit and delete. Edit and delete load the event, verify
+that the verified organizer owns it, and only then parse the body or run a
+mutation. A different authenticated organizer receives 403 before any write.
 
-`POST /api/events` and the browsing module's future `GET /api/events` share one
-path. `backend/config/urls.py` dispatches that collection route by HTTP method so
-URL resolution cannot shadow one module with the other. Add the browsing handler
-to `EVENT_COLLECTION` when it is implemented; unimplemented methods remain 404.
+`POST /api/events` and the browsing module's `GET /api/events` share one path.
+`backend/config/urls.py` dispatches that collection route by HTTP method so URL
+resolution cannot shadow one module with the other. The event detail route uses
+the same pattern for organizer `PUT`/`DELETE`; the browsing module can add `GET`
+to `EVENT_ITEM` when its details issue is implemented. Unimplemented methods
+remain 404.
 
 Development uses local HTTP and `EMS_DEBUG=1`. Outside development, settings
 require a real secret and enable secure cookies and HTTPS redirection; actual

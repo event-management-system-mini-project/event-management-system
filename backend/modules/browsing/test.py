@@ -1,5 +1,6 @@
 
 from datetime import timedelta
+import uuid
 
 from django.test import TestCase
 from django.utils import timezone
@@ -52,7 +53,7 @@ class UpcomingEventsTests(TestCase):
             date=today - timedelta(days=1)
         )
 
-        future_event = self.create_event(
+        self.create_event(
             "Future",
             today + timedelta(days=2),
             "12:00:00",
@@ -98,3 +99,33 @@ class UpcomingEventsTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"events": []})
+
+    def test_event_details_returns_registration_count_without_personal_data(self):
+        event = self.create_event(
+            "Details event",
+            timezone.localdate() + timedelta(days=2),
+            "10:00:00",
+        )
+
+        Registration.objects.create(
+            event=event,
+            name="Synthetic Attendee",
+            email="synthetic@example.com",
+        )
+
+        response = self.client.get(f"/api/events/{event.id}")
+
+        self.assertEqual(response.status_code, 200)
+
+        item = response.json()["event"]
+        self.assertEqual(item["id"], str(event.id))
+        self.assertEqual(item["name"], "Details event")
+        self.assertEqual(item["registration_count"], 1)
+        self.assertNotIn("email", item)
+        self.assertNotIn("registrants", item)
+
+    def test_event_details_returns_404_for_unknown_event(self):
+        response = self.client.get(f"/api/events/{uuid.uuid4()}")
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()["error"]["code"], "not_found")

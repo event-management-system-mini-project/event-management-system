@@ -14,9 +14,10 @@
     "test:gateway": "node --test gateway/server.test.mjs",
     "test:backend": "node scripts/python.mjs backend/manage.py test events.tests --verbosity 2",
     "test:organizer": "node scripts/python.mjs backend/manage.py test modules.organizer --verbosity 2",
+    "test:registration": "node scripts/python.mjs backend/manage.py test modules.registration --verbosity 2",
     "test:frontend": "vitest run --config frontend/vitest.config.mjs",
     "check": "node scripts/python.mjs backend/manage.py check",
-    "test": "npm run test:backend && npm run test:organizer && npm run test:gateway && npm run test:frontend",
+    "test": "npm run test:backend && npm run test:organizer && npm run test:registration && npm run test:gateway && npm run test:frontend",
     "smoke": "node scripts/python.mjs scripts/smoke.py"
   },
   "dependencies": {

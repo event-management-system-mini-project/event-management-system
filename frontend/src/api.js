@@ -101,3 +101,16 @@ export function createEvent(values) {
     body: values,
   });
 }
+
+export function updateEvent(eventId, values) {
+  return request(`/api/events/${eventId}`, {
+    method: "PUT",
+    body: values,
+  });
+}
+
+export function deleteEvent(eventId) {
+  return request(`/api/events/${eventId}`, {
+    method: "DELETE",
+  });
+}

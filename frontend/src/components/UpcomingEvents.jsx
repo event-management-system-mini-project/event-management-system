@@ -23,7 +23,7 @@ function sortEvents(events) {
   );
 }
 
-export default function UpcomingEvents({ api }) {
+export default function UpcomingEvents({ api, refreshKey = 0 }) {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -42,7 +42,7 @@ export default function UpcomingEvents({ api }) {
     } finally {
       setLoading(false);
     }
-  }, [api]);
+  }, [api, refreshKey]);
 
   useEffect(() => {
     loadEvents();

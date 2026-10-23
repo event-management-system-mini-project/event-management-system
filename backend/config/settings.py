@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "rest_framework",
     "events.apps.EventsConfig",
+    
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

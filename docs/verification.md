@@ -225,6 +225,7 @@ Vitest 5.0.5. Commands are listed in the [testing workflow](testing.md).
 | `makemigrations --check --dry-run` | Passed; no model changes missing migrations |
 | `npm run build` | Passed; production assets generated |
 | `npm run smoke` | Passed with a fresh temporary SQLite database through React, Node gateway and Django |
+| GitHub Actions CI | All three jobs passed, including the UTC and America/Los_Angeles React runs: [run 40509065165](https://github.com/event-management-system-mini-project/project-documentation/actions/runs/40509065165) |
 
 ## IST date/time rule
 

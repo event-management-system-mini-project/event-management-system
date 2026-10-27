@@ -298,8 +298,6 @@ describe("organizer event creation", () => {
   });
 
   it("blocks the 101-character name and 1001-character description before submit", async () => {
-    const user = userEvent.setup();
-
     const api = makeApi({
       getSession: vi.fn().mockResolvedValue({ organizer: ORGANIZER }),
     });
@@ -308,6 +306,8 @@ describe("organizer event creation", () => {
 
     await screen.findByText("No events yet");
 
+    // Long values are pasted as one change event. Emitting 1,101 keystrokes
+    // with userEvent adds no boundary coverage and is what made this test slow.
     fireEvent.change(screen.getByLabelText("Event name"), {
       target: { value: "A".repeat(101) },
     });
@@ -316,7 +316,7 @@ describe("organizer event creation", () => {
       target: { value: "B".repeat(1001) },
     });
 
-    await user.click(
+    fireEvent.click(
       screen.getByRole("button", { name: "Create event" }),
     );
 

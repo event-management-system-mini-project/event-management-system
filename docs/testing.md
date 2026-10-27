@@ -36,6 +36,15 @@ node scripts/python.mjs backend/manage.py test modules.organizer.tests.test_even
 node scripts/python.mjs backend/manage.py test modules.organizer.tests.test_edit_delete --verbosity 2
 node scripts/python.mjs backend/manage.py makemigrations --check --dry-run
 npm run test:frontend -- src/validation.test.js
+npm run test:frontend -- src/components/EventForm.test.jsx
+```
+
+Run the React suite under the IST contract and two other browser timezones:
+
+```text
+TZ=Asia/Kolkata npm run test:frontend
+TZ=UTC npm run test:frontend
+TZ=America/Los_Angeles npm run test:frontend
 ```
 
 The organizer tests run without the platform suite:
@@ -59,6 +68,14 @@ node scripts/python.mjs backend/manage.py test modules.organizer --verbosity 2
 - Tests use synthetic names, passwords and event details only. Logs are checked
   for submitted passwords and session identifiers.
 - The gateway test proves `X-Organizer-Id` and forwarding headers are stripped.
+- Organizer form dates and times are interpreted in IST, not the browser's local
+  timezone. `validation.test.js` uses fixed instants for future, past, same-day
+  and midnight boundaries, and CI repeats the React suite in UTC and
+  America/Los_Angeles.
+- Long boundary values in `EventForm.test.jsx` and `App.test.jsx` use one
+  `fireEvent.change` (a paste-style interaction) rather than typing 1,001
+  characters. No custom or enlarged test timeout is used; the normal Vitest
+  timeout applies.
 
 ## Adding a module test
 
@@ -78,6 +95,8 @@ node scripts/python.mjs backend/manage.py test modules.organizer --verbosity 2
 - Django system check and migration consistency.
 - Platform and organizer test suites as separate jobs.
 - Gateway and React tests plus the production build.
+- React validation and UI tests repeated under UTC and America/Los_Angeles to
+  prove the IST date/time rule is independent of the browser timezone.
 - A fresh-database smoke test through React, Node and Django.
 
 CI uses placeholder credentials supplied as environment values. It never uses a

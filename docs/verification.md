@@ -209,3 +209,69 @@ milestone acceptance checklist, other modules' remaining acceptance work,
 production deployment, backup/restore and the SRS's end-user response-time
 thresholds are still separate. The public event-detail route remains open browsing
 work.
+
+# Sprint 2 organizer form validation (BL-21/BL-22)
+
+Executed on **27 October 2026** on Linux x86_64 with Python 3.12.3, Django 5.2.18,
+SQLite 3.45.1, Node.js 24.14.1, npm 11.13.0, React 19.3.1, Vite 8.3.4 and
+Vitest 5.0.5. Commands are listed in the [testing workflow](testing.md).
+
+## Automated results
+
+| Check | Actual result |
+| --- | --- |
+| `npm test` | Organizer 39, platform 25, registration 4, gateway 3 and frontend 29 passed |
+| `npm run check` | Passed; no issues |
+| `makemigrations --check --dry-run` | Passed; no model changes missing migrations |
+| `npm run build` | Passed; production assets generated |
+| `npm run smoke` | Passed with a fresh temporary SQLite database through React, Node gateway and Django |
+| GitHub Actions CI | All three jobs passed, including the UTC and America/Los_Angeles React runs: [run 40509065165](https://github.com/event-management-system-mini-project/project-documentation/actions/runs/40509065165) |
+
+## IST date/time rule
+
+- `frontend/src/validation.js` interprets entered dates and times with the fixed
+  Asia/Kolkata offset of UTC+05:30, not the browser's local timezone. The fixed
+  offset is valid because IST has no daylight-saving transition.
+- `earliestSelectableDate()` converts the current instant to the IST calendar
+  before producing the form's date `min`. A user in UTC or Los Angeles therefore
+  sees the same earliest date as the Django server.
+- The future check is the same `starts_at <= now` rule as the backend. A same-day
+  event is accepted only when its entered time is later than the current IST time.
+- Impossible values such as `2030-02-31`, `24:00` and malformed date/time strings
+  are rejected before submission.
+
+## Timezone and boundary runs
+
+The full React suite passed in four process timezones:
+
+| `TZ` | Result |
+| --- | --- |
+| `Asia/Kolkata` | 29 passed in 3 files; 6.06 s cold run |
+| `UTC` | 29 passed in 3 files; 3.13 s |
+| `America/Los_Angeles` | 29 passed in 3 files; 3.16 s |
+| `Pacific/Kiritimati` | 29 passed in 3 files; 3.71 s |
+
+Fixed-clock tests cover:
+- future and past instants relative to 12:00 IST;
+- same-day 00:00/00:01 and 23:59/next-day boundaries;
+- one instant written in IST, UTC and US Pacific offsets;
+- earliest selectable date just before and after the IST midnight boundary.
+
+## Form boundary reliability
+
+- The long-input tests use one `fireEvent.change` to model a paste. They do not
+  emit 1,101 keystrokes through `userEvent.type`.
+- The 101-character/1001-character regression test completes in about 81 ms; the
+  accepted 100-character/1000-character test completes in about 548 ms.
+- The suite uses the normal Vitest timeout. No custom or enlarged test timeout is
+  configured.
+- Three consecutive normal-timeout runs passed: 29/29 in 5.98 s, 2.96 s and 3.06 s.
+- `EventForm.test.jsx` covers accepted 100/1000 boundaries, rejected 101/1001
+  boundaries, required fields, error correction and the IST date minimum. Invalid
+  submissions never call `onSave`.
+
+## Limits
+
+These are component and validation checks with synthetic values. The sprint
+milestone checklist still owns the integrated browser/performance demonstration,
+and the repository-owner review remains outstanding.

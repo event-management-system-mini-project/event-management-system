@@ -3,11 +3,14 @@ import { describe, expect, it } from "vitest";
 import {
   DESCRIPTION_LIMIT,
   NAME_LIMIT,
+  earliestSelectableDate,
   normalizedEventValues,
   validateEvent,
 } from "./validation.js";
 
-const NOW = new Date(2030, 0, 1, 12, 0, 0);
+// 2030-01-01 12:00 IST. Fixed instants keep these checks independent of the
+// browser's local timezone.
+const NOW = new Date("2030-01-01T06:30:00.000Z");
 
 function values(changes = {}) {
   return {
@@ -61,13 +64,53 @@ describe("validateEvent", () => {
     });
   });
 
-  it("rejects past dates and times in the configured local timezone", () => {
+  it("rejects past dates and times using the IST event contract", () => {
     expect(validateEvent(values({ date: "2029-12-31" }), NOW)).toEqual({
       date: ["Choose a date and time in the future."],
     });
     expect(
       validateEvent(values({ date: "2030-01-01", time: "11:59" }), NOW),
     ).toEqual({ date: ["Choose a date and time in the future."] });
+    expect(
+      validateEvent(values({ date: "2030-01-01", time: "12:01" }), NOW),
+    ).toEqual({});
+  });
+
+  it("handles same-day and midnight boundaries in IST", () => {
+    const startOfDay = new Date("2029-12-31T18:30:00.000Z"); // 2030-01-01 00:00 IST
+    expect(
+      validateEvent(values({ date: "2030-01-01", time: "00:00" }), startOfDay),
+    ).toEqual({ date: ["Choose a date and time in the future."] });
+    expect(
+      validateEvent(values({ date: "2030-01-01", time: "00:01" }), startOfDay),
+    ).toEqual({});
+    expect(
+      validateEvent(values({ date: "2029-12-31", time: "23:59" }), startOfDay),
+    ).toEqual({ date: ["Choose a date and time in the future."] });
+
+    const endOfDay = new Date("2030-01-01T18:29:00.000Z"); // 2030-01-01 23:59 IST
+    expect(
+      validateEvent(values({ date: "2030-01-01", time: "23:59" }), endOfDay),
+    ).toEqual({ date: ["Choose a date and time in the future."] });
+    expect(
+      validateEvent(values({ date: "2030-01-02", time: "00:00" }), endOfDay),
+    ).toEqual({});
+  });
+
+  it("uses the same result for one instant written in IST, UTC and US Pacific offsets", () => {
+    const sameInstant = [
+      new Date("2030-01-01T12:00:00+05:30"),
+      new Date("2030-01-01T06:30:00Z"),
+      new Date("2029-12-31T22:30:00-08:00"),
+    ];
+    for (const now of sameInstant) {
+      expect(
+        validateEvent(values({ date: "2030-01-01", time: "12:01" }), now),
+      ).toEqual({});
+      expect(
+        validateEvent(values({ date: "2030-01-01", time: "11:59" }), now),
+      ).toEqual({ date: ["Choose a date and time in the future."] });
+    }
   });
 
   it("rejects malformed and impossible date/time values", () => {
@@ -80,6 +123,24 @@ describe("validateEvent", () => {
     expect(validateEvent(values({ time: "9am" }), NOW)).toEqual({
       time: ["Use the HH:MM format."],
     });
+  });
+});
+
+describe("earliestSelectableDate", () => {
+  it("uses the IST calendar date rather than the browser's local date", () => {
+    // 20:00 UTC is already 01:30 IST on the next day.
+    expect(earliestSelectableDate(new Date("2029-12-31T20:00:00Z"))).toBe(
+      "2030-01-01",
+    );
+    expect(earliestSelectableDate(new Date("2029-12-31T18:29:00Z"))).toBe(
+      "2029-12-31",
+    );
+    expect(earliestSelectableDate(new Date("2030-01-01T18:29:00Z"))).toBe(
+      "2030-01-01",
+    );
+    expect(earliestSelectableDate(new Date("2030-01-01T18:30:00Z"))).toBe(
+      "2030-01-02",
+    );
   });
 });
 

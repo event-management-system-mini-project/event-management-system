@@ -3,6 +3,7 @@ import React, { useEffect, useId, useState } from "react";
 import {
   DESCRIPTION_LIMIT,
   NAME_LIMIT,
+  earliestSelectableDate,
   hasErrors,
   normalizedEventValues,
   validateEvent,
@@ -25,13 +26,6 @@ function valuesFromEvent(event) {
     time: event.time.slice(0, 5),
     location: event.location,
   };
-}
-
-function todayIso() {
-  const today = new Date();
-  const month = String(today.getMonth() + 1).padStart(2, "0");
-  const day = String(today.getDate()).padStart(2, "0");
-  return `${today.getFullYear()}-${month}-${day}`;
 }
 
 function characterCount(value) {
@@ -210,7 +204,7 @@ export default function EventForm({
               id={`${fieldId}-date`}
               name="date"
               type="date"
-              min={todayIso()}
+              min={earliestSelectableDate()}
               value={values.date}
               onChange={(inputEvent) => update("date", inputEvent.target.value)}
               aria-invalid={dateError ? "true" : undefined}

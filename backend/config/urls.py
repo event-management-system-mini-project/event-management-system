@@ -46,7 +46,7 @@ def event_item(request, event_id):
 
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+   
     path("api/", include("modules.registrants.urls")),
     path("api/health", health),
     path("api/events", event_collection),

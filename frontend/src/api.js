@@ -77,3 +77,13 @@ export function listOwnEvents() {
 export function createEvent(values) {
   return request("/api/events", { method: "POST", body: values });
 }
+
+// Added for #14
+export function listRegistrations(eventId) {
+  return request(`/api/events/${eventId}/registrations`);
+}
+
+// Added for #15 (used by RegistrationForm.jsx)
+export function registerForEvent(eventId, values) {
+  return request(`/api/events/${eventId}/register`, { method: "POST", body: values });
+}

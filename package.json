@@ -1,3 +1,4 @@
+
 {
   "name": "event-management-system",
   "version": "0.1.0",
@@ -18,7 +19,8 @@
     "test:frontend": "vitest run --config frontend/vitest.config.mjs",
     "check": "node scripts/python.mjs backend/manage.py check",
     "test": "npm run test:backend && npm run test:organizer && npm run test:registration && npm run test:gateway && npm run test:frontend",
-    "smoke": "node scripts/python.mjs scripts/smoke.py"
+    "smoke": "node scripts/python.mjs scripts/smoke.py",
+    "benchmark:browsing": "node scripts/python.mjs scripts/bl17_benchmark.py"
   },
   "dependencies": {
     "react": "19.3.1",

@@ -1,0 +1,57 @@
+{
+  "metadata": {
+    "issue": "BL-17",
+    "measured_at_local": "2026-10-28T19:54:39+0530",
+    "platform": "win32",
+    "python": "3.13.14",
+    "node": "v22.19.0",
+    "database": "temporary SQLite database",
+    "route": "Node gateway -> Django -> SQLite",
+    "synthetic_event_count": 100,
+    "iterations_per_action": 15,
+    "warmup_requests": 1,
+    "measurement": "Client-side elapsed time for each HTTP request through the gateway, measured with time.perf_counter.",
+    "not_measured": [
+      "Browser rendering and action-to-visible-result time",
+      "Production traffic or production database performance",
+      "Browser network throttling or remote-network latency"
+    ]
+  },
+  "results": {
+    "event_list_api": {
+      "samples": 15,
+      "min_ms": 5.691,
+      "median_ms": 9.22,
+      "p95_ms": 29.232,
+      "max_ms": 29.232
+    },
+    "event_details_api": {
+      "samples": 15,
+      "min_ms": 4.002,
+      "median_ms": 5.909,
+      "p95_ms": 28.311,
+      "max_ms": 28.311
+    },
+    "registration_api": {
+      "samples": 15,
+      "min_ms": 11.172,
+      "median_ms": 16.097,
+      "p95_ms": 48.386,
+      "max_ms": 48.386
+    },
+    "nonowner_edit_denial_api": {
+      "samples": 15,
+      "min_ms": 6.636,
+      "median_ms": 8.311,
+      "p95_ms": 31.552,
+      "max_ms": 31.552
+    },
+    "nonowner_delete_denial_api": {
+      "samples": 15,
+      "min_ms": 5.02,
+      "median_ms": 7.469,
+      "p95_ms": 33.494,
+      "max_ms": 33.494
+    }
+  }
+}

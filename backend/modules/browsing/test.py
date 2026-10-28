@@ -2,7 +2,9 @@
 from datetime import timedelta
 import uuid
 
+from django.db import connection
 from django.test import TestCase
+from django.test.utils import CaptureQueriesContext
 from django.utils import timezone
 
 from events.models import Event, Organizer, Registration
@@ -41,14 +43,13 @@ class UpcomingEventsTests(TestCase):
     def test_past_events_are_excluded(self):
         today = timezone.localdate()
 
-        # Create a valid future event first.
         past_event = self.create_event(
             "Past",
             today + timedelta(days=1),
             "12:00:00",
         )
 
-        # Simulate an existing database record that is now in the past.
+        # Simulate an existing record that is now in the past.
         Event.objects.filter(pk=past_event.pk).update(
             date=today - timedelta(days=1)
         )
@@ -129,3 +130,77 @@ class UpcomingEventsTests(TestCase):
 
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json()["error"]["code"], "not_found")
+
+    def test_list_query_count_stays_bounded_as_event_count_grows(self):
+        today = timezone.localdate()
+
+        # Measure queries for a small synthetic dataset.
+        for index in range(3):
+            self.create_event(
+                f"Small dataset event {index}",
+                today + timedelta(days=index + 1),
+                "10:00:00",
+            )
+
+        with CaptureQueriesContext(connection) as small_queries:
+            small_response = self.client.get("/api/events")
+
+        self.assertEqual(small_response.status_code, 200)
+        small_query_count = len(small_queries)
+
+        # Add more events and repeat the measurement.
+        for index in range(20):
+            self.create_event(
+                f"Larger dataset event {index}",
+                today + timedelta(days=index + 1),
+                "11:00:00",
+            )
+
+        with CaptureQueriesContext(connection) as large_queries:
+            large_response = self.client.get("/api/events")
+
+        self.assertEqual(large_response.status_code, 200)
+        self.assertEqual(len(large_response.json()["events"]), 23)
+
+        large_query_count = len(large_queries)
+
+        # Query count should not grow once per event.
+        self.assertLessEqual(
+            large_query_count,
+            small_query_count + 1,
+            msg=(
+                f"Possible N+1 query issue: small dataset used "
+                f"{small_query_count} queries; larger dataset used "
+                f"{large_query_count} queries."
+            ),
+        )
+
+    def test_event_details_query_count_stays_bounded_with_registrations(self):
+        event = self.create_event(
+            "Performance detail event",
+            timezone.localdate() + timedelta(days=2),
+            "10:00:00",
+        )
+
+        for index in range(10):
+            Registration.objects.create(
+                event=event,
+                name=f"Synthetic Attendee {index}",
+                email=f"synthetic{index}@example.com",
+            )
+
+        with CaptureQueriesContext(connection) as queries:
+            response = self.client.get(f"/api/events/{event.id}")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["event"]["registration_count"], 10)
+
+        # Details should not require a query for every registration.
+        self.assertLessEqual(
+            len(queries),
+            5,
+            msg=(
+                f"Event details used {len(queries)} database queries; "
+                "expected no more than 5."
+            ),
+        )

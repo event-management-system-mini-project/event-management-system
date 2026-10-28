@@ -34,10 +34,11 @@ Press **Ctrl+C** to stop the three development services. Default addresses:
 | Django | 127.0.0.1:8000 | REST modules, verified authentication, validation and data access |
 | SQLite | data/events.sqlite3 | Local relational storage |
 
-The organizer workspace implements sign-in, sign-out, event creation and the
-organizer's own event list against the real Django session and SQLite database.
-Browsing, attendee registration and organizer edit/delete remain separate module
-work. There is no pretend event API or production identity-header bypass.
+The organizer workspace implements sign-in, sign-out, event creation, owner-only
+editing, confirmation-based deletion and the organizer's own event list against
+the real Django session and SQLite database. Public browsing and attendee
+registration are separate modules with their own issue acceptance work. There is
+no pretend event API or production identity-header bypass.
 
 ## Check the platform
 
@@ -77,9 +78,11 @@ node scripts/python.mjs backend/manage.py makemigrations --check --dry-run
 - `frontend/`: React connection check and entry point for feature screens.
 - `docs/`: API contract, data rules and verification evidence.
 
-The three feature URL modules are intentionally empty extension points.
-Keep canonical migrations in `backend/events/migrations/`; use repositories and
-test fixtures at module boundaries to avoid competing production models.
+Feature URL modules register their own paths under `/api/`. The event collection
+and event detail paths use explicit method dispatch so browsing and organizer
+handlers can share a route without shadowing each other. Keep canonical
+migrations in `backend/events/migrations/`; use repositories and test fixtures at
+module boundaries to avoid competing production models.
 
 ## Configuration and contracts
 

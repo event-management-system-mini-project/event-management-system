@@ -1,5 +1,9 @@
 export const NAME_LIMIT = 100;
 export const DESCRIPTION_LIMIT = 1000;
+export const EVENT_TIME_ZONE = "Asia/Kolkata";
+export const EVENT_UTC_OFFSET_MINUTES = 5 * 60 + 30;
+
+const EVENT_UTC_OFFSET_MS = EVENT_UTC_OFFSET_MINUTES * 60 * 1000;
 
 export function normalizedEventValues(values) {
   return {
@@ -15,7 +19,19 @@ function textLength(value) {
   return [...value.trim()].length;
 }
 
-function parseLocalDateTime(date, time) {
+function pad2(value) {
+  return String(value).padStart(2, "0");
+}
+
+/**
+ * Interpret a date/time entered in the organizer form as Asia/Kolkata time.
+ *
+ * The contract timezone has a fixed UTC+05:30 offset and no daylight-saving
+ * transition, so the conversion is deterministic in every browser timezone.
+ * The UTC components are checked after construction to reject impossible
+ * values such as 2030-02-31 or 24:00.
+ */
+function parseEventDateTime(date, time) {
   const dateParts = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
   const timeParts = /^(\d{2}):(\d{2})(?::(\d{2}))?$/.exec(time);
   if (!dateParts || !timeParts) return null;
@@ -26,18 +42,36 @@ function parseLocalDateTime(date, time) {
   const hour = Number(timeParts[1]);
   const minute = Number(timeParts[2]);
   const second = timeParts[3] === undefined ? 0 : Number(timeParts[3]);
-  const value = new Date(year, month - 1, day, hour, minute, second, 0);
+
+  const istComponents = new Date(0);
+  istComponents.setUTCFullYear(year, month - 1, day);
+  istComponents.setUTCHours(hour, minute, second, 0);
   if (
-    value.getFullYear() !== year ||
-    value.getMonth() !== month - 1 ||
-    value.getDate() !== day ||
-    value.getHours() !== hour ||
-    value.getMinutes() !== minute ||
-    value.getSeconds() !== second
+    istComponents.getUTCFullYear() !== year ||
+    istComponents.getUTCMonth() !== month - 1 ||
+    istComponents.getUTCDate() !== day ||
+    istComponents.getUTCHours() !== hour ||
+    istComponents.getUTCMinutes() !== minute ||
+    istComponents.getUTCSeconds() !== second
   ) {
     return null;
   }
-  return value;
+
+  return new Date(istComponents.getTime() - EVENT_UTC_OFFSET_MS);
+}
+
+/**
+ * Earliest date selectable in the IST calendar for a given instant.
+ *
+ * This is deliberately independent of the browser's local timezone so a user
+ * in Los Angeles still sees the same earliest date as the server contract.
+ */
+export function earliestSelectableDate(now = new Date()) {
+  const istNow = new Date(now.getTime() + EVENT_UTC_OFFSET_MS);
+  const year = istNow.getUTCFullYear();
+  const month = pad2(istNow.getUTCMonth() + 1);
+  const day = pad2(istNow.getUTCDate());
+  return `${year}-${month}-${day}`;
 }
 
 /** Return field -> messages, mirroring the server's validation rules. */
@@ -72,7 +106,7 @@ export function validateEvent(values, now = new Date()) {
   }
 
   if (values.date && values.time && !errors.date && !errors.time) {
-    const startsAt = parseLocalDateTime(values.date, values.time);
+    const startsAt = parseEventDateTime(values.date, values.time);
     if (!startsAt) {
       errors.date = ["Choose a valid date and time."];
     } else if (startsAt <= now) {

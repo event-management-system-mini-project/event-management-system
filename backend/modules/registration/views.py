@@ -1,10 +1,11 @@
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from .models import Event, Registration
+from events.models import Event, Registration
 
 
 @api_view(["POST"])
@@ -38,12 +39,25 @@ def register_attendee(request, event_id):
             },
             status=status.HTTP_201_CREATED,
         )
-    except IntegrityError:
-        # Caught by database unique constraint for atomic duplicate prevention [BL-08]
+    except (IntegrityError, ValidationError) as error:
+        # The generated normalized-email unique constraint returns IntegrityError
+        # on a bypassed bulk path, while ordinary model validation raises
+        # ValidationError. Both must remain a clear 400 with no second record.
+        fields = getattr(error, "message_dict", None)
+        duplicate = fields and any(
+            "already exists" in message
+            for messages in fields.values()
+            for message in messages
+        )
+        if duplicate:
+            message = "This email is already registered for this event."
+            fields = {"email": [message]}
+        elif fields:
+            message = "Check the registration details."
+        else:
+            message = "This email is already registered for this event."
+            fields = {"email": [message]}
         return Response(
-            {
-                "detail": "This email is already registered for this event.",
-                "fields": {"email": ["This email is already registered for this event."]},
-            },
+            {"detail": message, "fields": fields},
             status=status.HTTP_400_BAD_REQUEST,
         )

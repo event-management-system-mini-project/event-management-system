@@ -115,3 +115,163 @@ does not claim edit/delete (Sprint 2), attendee browsing/registration, productio
 deployment, backup/restore or the SRS's end-user response-time thresholds.
 GitHub Actions runs the same commands on push and pull request; the PR records
 the run result.
+
+# Sprint 2 organizer verification
+
+Executed on **23 October 2026** on Linux x86_64 with Python 3.12.3, Django 5.2.18,
+SQLite 3.45.1, Node.js 24.14.1, npm 11.13.0, React 19.3.1, Vite 8.3.4 and
+Vitest 5.0.5. Commands are listed in the [testing workflow](testing.md).
+
+## Automated results
+
+| Check | Actual result |
+| --- | --- |
+| `python backend/manage.py test modules.organizer` | 39 passed; no failures |
+| `python backend/manage.py test events.tests` | 25 passed; no failures |
+| `python backend/manage.py test modules.registration` | 4 passed; no failures |
+| `npm run test:gateway` | 3 passed; no failures |
+| `npm run test:frontend` | 21 passed in 2 files; no failures |
+| `npm run check` | Passed; no issues |
+| `makemigrations --check --dry-run` | Passed; no model changes missing migrations |
+| `npm run build` | Passed; production assets generated |
+| `npm run smoke` | Passed with a fresh temporary SQLite database through React, Node gateway and Django |
+| GitHub Actions CI | All three jobs passed on the Sprint 2 branch/PR: [run 39909030428](https://github.com/event-management-system-mini-project/project-documentation/actions/runs/39909030428) |
+
+## Edit and delete evidence
+
+- Owner `PUT /api/events/{id}` updates only after the repository commit and returns
+  the standard event object with its current registration count.
+- Name/description boundaries, blank fields, malformed dates and past date/time
+  return field-level 400 errors. The original committed event and its registrations
+  remain unchanged for every rejected case.
+- A client-supplied organizer id or spoofed `X-Organizer-Id` does not transfer
+  ownership. A different authenticated organizer receives 403 before the update or
+  delete handler runs, and receives 401 when anonymous.
+- Denial stayed below one second in the recorded local run: nonowner edit 1.3 ms,
+  nonowner delete 1.5 ms, anonymous edit 0.6 ms and anonymous delete 0.6 ms. These
+  are handler times on a disposable test database, not whole-app response times.
+- `PUT` and `DELETE` reject a missing CSRF token with 403 and accept a token
+  obtained from the real session endpoint.
+- Owner delete removes the event and every linked registration in one transaction;
+  an unrelated event and its registration remain. Nonowner, anonymous and CSRF
+  denials preserve every event and registration row.
+- Simulated database and commit failures return 503 `database_unavailable` with no
+  internal SQL detail. The original event and registrations survive rollback.
+- After an owner delete, the identifier is absent from the event store and a later
+  `GET /api/events/{id}` returns 404. The public detail route is still owned by the
+  open browsing-detail issue, so this check also asserts the row is gone directly.
+- The React edit form prefills the selected event, sends a normalized `PUT`, maps
+  field errors back to the form and restores create mode after save or cancel.
+- Delete requires the explicit confirmation dialog. Cancel leaves the event in the
+  list; a confirmed delete removes it only after the API resolves. A failed delete
+  keeps the event and shows a clear error.
+- Create, edit and delete bump a refresh signal consumed by the public upcoming
+  list, which refetches through the real API client.
+
+## Integrated HTTP check
+
+A temporary event was created and removed against the running Vite proxy, Node
+gateway, Django service and local SQLite database:
+
+| Step | Result |
+| --- | --- |
+| Organizer A login | 200 |
+| Create event | 201 |
+| Owner edit event | 200; changed name persisted and returned |
+| Owner delete event | 200; `{deleted: true, event_id}` |
+| Later `GET /api/events/{id}` | 404 `not_found` |
+| Organizer B edit/delete the same event | 403 `forbidden` in 13.5 ms / 55.5 ms |
+| Anonymous edit/delete with an anonymous CSRF token | 401 `authentication_required` in 6.5 ms / 47.2 ms |
+| Anonymous edit/delete without a CSRF token | 403 `csrf_failed` |
+
+The temporary events and the temporary browser organizer were removed afterward;
+the original two synthetic events remained. These times include the local proxy,
+gateway, Django and SQLite path, but are not production or SRS-wide benchmarks.
+
+## Browser check
+
+A real browser session signed in through the organizer form and exercised the
+integrated UI:
+
+- created a future event and saw it appear in both the organizer list and the
+  public upcoming list after the committed response;
+- opened Edit, verified the form was prefilled with the saved date/time and
+  values, changed the name/location, and saw the edited event replace the old one;
+- opened Delete, verified the explicit confirmation dialog named the event, and
+  confirmed removal; the organizer list returned to its empty state and the event
+  disappeared from the public list.
+
+## Limits
+
+This run covers the isolated organizer module, mocked React component tests, a
+real local HTTP path and a browser UI run against local services. The sprint
+milestone acceptance checklist, other modules' remaining acceptance work,
+production deployment, backup/restore and the SRS's end-user response-time
+thresholds are still separate. The public event-detail route remains open browsing
+work.
+
+# Sprint 2 organizer form validation (BL-21/BL-22)
+
+Executed on **27 October 2026** on Linux x86_64 with Python 3.12.3, Django 5.2.18,
+SQLite 3.45.1, Node.js 24.14.1, npm 11.13.0, React 19.3.1, Vite 8.3.4 and
+Vitest 5.0.5. Commands are listed in the [testing workflow](testing.md).
+
+## Automated results
+
+| Check | Actual result |
+| --- | --- |
+| `npm test` | Organizer 39, platform 25, registration 4, gateway 3 and frontend 29 passed |
+| `npm run check` | Passed; no issues |
+| `makemigrations --check --dry-run` | Passed; no model changes missing migrations |
+| `npm run build` | Passed; production assets generated |
+| `npm run smoke` | Passed with a fresh temporary SQLite database through React, Node gateway and Django |
+| GitHub Actions CI | All three jobs passed, including the UTC and America/Los_Angeles React runs: [run 40509065165](https://github.com/event-management-system-mini-project/project-documentation/actions/runs/40509065165) |
+
+## IST date/time rule
+
+- `frontend/src/validation.js` interprets entered dates and times with the fixed
+  Asia/Kolkata offset of UTC+05:30, not the browser's local timezone. The fixed
+  offset is valid because IST has no daylight-saving transition.
+- `earliestSelectableDate()` converts the current instant to the IST calendar
+  before producing the form's date `min`. A user in UTC or Los Angeles therefore
+  sees the same earliest date as the Django server.
+- The future check is the same `starts_at <= now` rule as the backend. A same-day
+  event is accepted only when its entered time is later than the current IST time.
+- Impossible values such as `2030-02-31`, `24:00` and malformed date/time strings
+  are rejected before submission.
+
+## Timezone and boundary runs
+
+The full React suite passed in four process timezones:
+
+| `TZ` | Result |
+| --- | --- |
+| `Asia/Kolkata` | 29 passed in 3 files; 6.06 s cold run |
+| `UTC` | 29 passed in 3 files; 3.13 s |
+| `America/Los_Angeles` | 29 passed in 3 files; 3.16 s |
+| `Pacific/Kiritimati` | 29 passed in 3 files; 3.71 s |
+
+Fixed-clock tests cover:
+- future and past instants relative to 12:00 IST;
+- same-day 00:00/00:01 and 23:59/next-day boundaries;
+- one instant written in IST, UTC and US Pacific offsets;
+- earliest selectable date just before and after the IST midnight boundary.
+
+## Form boundary reliability
+
+- The long-input tests use one `fireEvent.change` to model a paste. They do not
+  emit 1,101 keystrokes through `userEvent.type`.
+- The 101-character/1001-character regression test completes in about 81 ms; the
+  accepted 100-character/1000-character test completes in about 548 ms.
+- The suite uses the normal Vitest timeout. No custom or enlarged test timeout is
+  configured.
+- Three consecutive normal-timeout runs passed: 29/29 in 5.98 s, 2.96 s and 3.06 s.
+- `EventForm.test.jsx` covers accepted 100/1000 boundaries, rejected 101/1001
+  boundaries, required fields, error correction and the IST date minimum. Invalid
+  submissions never call `onSave`.
+
+## Limits
+
+These are component and validation checks with synthetic values. The sprint
+milestone checklist still owns the integrated browser/performance demonstration,
+and the repository-owner review remains outstanding.

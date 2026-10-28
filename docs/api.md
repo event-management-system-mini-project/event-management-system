@@ -48,6 +48,19 @@ A database or commit failure returns 503 `database_unavailable` and no event is
 reported as created. Any submitted `organizer_id` is ignored; the session identity
 always owns the event.
 
+Event date/time fields are interpreted as **Asia/Kolkata (IST, UTC+05:30, no
+daylight saving)** by both the React form and the Django server. The form's
+minimum date and future check use the IST calendar even when the browser is in
+another timezone. A same-day event is accepted only when its entered time is
+later than the current IST time; this is the same `starts_at <= now` rule used by
+the backend. The form does not fall back to the browser's local timezone.
+
+`PUT` and `DELETE /api/events/{id}` require the verified owner and CSRF. A
+different authenticated organizer receives 403 before the body is parsed or the
+event is changed. Invalid edits return field errors and leave the original event
+and its registrations unchanged; delete removes the event and its registrations in
+one committed transaction. A later request for the deleted identifier is not found.
+
 Create/edit bodies contain name, description, date, time and location.
 The backend takes organizer identity from verified Django authentication, never
 from a submitted organizer_id. Registration bodies contain name and email.

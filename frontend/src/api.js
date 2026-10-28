@@ -1,7 +1,11 @@
+
 const JSON_HEADERS = { accept: "application/json" };
 
 export class ApiError extends Error {
-  constructor(message, { status = 0, code = "request_failed", fields = null } = {}) {
+  constructor(
+    message,
+    { status = 0, code = "request_failed", fields = null } = {},
+  ) {
     super(message);
     this.name = "ApiError";
     this.status = status;
@@ -21,16 +25,19 @@ async function request(path, { method = "GET", body } = {}) {
     credentials: "same-origin",
     headers: { ...JSON_HEADERS },
   };
+
   if (body !== undefined) {
     options.headers["content-type"] = "application/json";
     options.body = JSON.stringify(body);
   }
+
   if (!["GET", "HEAD", "OPTIONS"].includes(method)) {
     const token = csrfToken();
     if (token) options.headers["X-CSRFToken"] = token;
   }
 
   let response;
+
   try {
     response = await fetch(path, options);
   } catch {
@@ -41,6 +48,7 @@ async function request(path, { method = "GET", body } = {}) {
   }
 
   let data = null;
+
   try {
     data = await response.json();
   } catch {
@@ -49,12 +57,17 @@ async function request(path, { method = "GET", body } = {}) {
 
   if (!response.ok) {
     const error = data && data.error ? data.error : {};
-    throw new ApiError(error.message || "The request could not be completed.", {
-      status: response.status,
-      code: error.code || "request_failed",
-      fields: error.fields || null,
-    });
+
+    throw new ApiError(
+      error.message || "The request could not be completed.",
+      {
+        status: response.status,
+        code: error.code || "request_failed",
+        fields: error.fields || null,
+      },
+    );
   }
+
   return data;
 }
 
@@ -63,7 +76,10 @@ export function getSession() {
 }
 
 export function login(username, password) {
-  return request("/api/auth/login", { method: "POST", body: { username, password } });
+  return request("/api/auth/login", {
+    method: "POST",
+    body: { username, password },
+  });
 }
 
 export function logout() {
@@ -74,8 +90,29 @@ export function listOwnEvents() {
   return request("/api/organizer/events");
 }
 
+// Public list of upcoming events.
+export function listUpcomingEvents() {
+  return request("/api/events");
+}
+
 export function createEvent(values) {
-  return request("/api/events", { method: "POST", body: values });
+  return request("/api/events", {
+    method: "POST",
+    body: values,
+  });
+}
+
+export function updateEvent(eventId, values) {
+  return request(`/api/events/${eventId}`, {
+    method: "PUT",
+    body: values,
+  });
+}
+
+export function deleteEvent(eventId) {
+  return request(`/api/events/${eventId}`, {
+    method: "DELETE",
+  });
 }
 
 // Added for #14

@@ -37,6 +37,21 @@ class DjangoEventStore:
             date=date, time=time, location=location,
         ))
 
+    def update(self, event, *, name, description, date, time, location):
+        def operation():
+            event.name = name
+            event.description = description
+            event.date = date
+            event.time = time
+            event.location = location
+            event.save()
+            return event
+
+        return committed_write(operation)
+
+    def delete(self, event):
+        return committed_write(lambda: event.delete())
+
 
 class DjangoRegistrationStore:
     def for_event(self, event_id):

@@ -34,6 +34,8 @@ jobs:
         run: python backend/manage.py test events.tests --verbosity 2
       - name: Organizer module tests in isolation
         run: python backend/manage.py test modules.organizer --verbosity 2
+      - name: Registration module tests in isolation
+        run: python backend/manage.py test modules.registration --verbosity 2
 
   node:
     name: Gateway, React tests and production build
@@ -50,6 +52,10 @@ jobs:
         run: npm run test:gateway
       - name: React validation and UI tests
         run: npm run test:frontend
+      - name: React suite under alternate browser timezones
+        run: |
+          TZ=UTC npm run test:frontend
+          TZ=America/Los_Angeles npm run test:frontend
       - name: Production build
         run: npm run build
 

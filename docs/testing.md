@@ -1,8 +1,9 @@
 # Organizer testing and review workflow
 
-This page covers the Sprint 1 organizer module: authentication, protected
-actions, event creation and the automated checks around them. It also explains
-how another feature module adds its tests to the same commands.
+This page covers the Sprint 1 and Sprint 2 organizer module: authentication,
+protected actions, event creation, owner edit/delete and the automated checks
+around them. It also explains how another feature module adds its tests to the
+same commands.
 
 ## Local setup
 
@@ -17,10 +18,11 @@ disposable test database, so local event data is not modified.
 
 | Command | Scope |
 | --- | --- |
-| `npm run test:organizer` | Real organizer handlers only: session/login/logout, CSRF, protected-action denial, event validation, owner isolation, commit failure |
+| `npm run test:organizer` | Real organizer handlers only: session/login/logout, CSRF, create/edit/delete validation, owner isolation, denial timing, commit failure |
+| `npm run test:registration` | Registration route success, duplicate prevention, missing input and unknown events |
 | `npm run test:backend` | Platform models, repositories and authentication adapter |
 | `npm run test:gateway` | Node gateway forwarding and identity-header stripping |
-| `npm run test:frontend` | React validation, login/logout, event form and failure-state tests |
+| `npm run test:frontend` | React validation, login/logout, create/edit forms, delete confirmation and failure-state tests |
 | `npm test` | All of the above |
 | `npm run check` | Django system check |
 | `npm run build` | Production React build |
@@ -31,8 +33,18 @@ Useful narrower commands:
 ```text
 node scripts/python.mjs backend/manage.py test modules.organizer.tests.test_auth --verbosity 2
 node scripts/python.mjs backend/manage.py test modules.organizer.tests.test_events --verbosity 2
+node scripts/python.mjs backend/manage.py test modules.organizer.tests.test_edit_delete --verbosity 2
 node scripts/python.mjs backend/manage.py makemigrations --check --dry-run
 npm run test:frontend -- src/validation.test.js
+npm run test:frontend -- src/components/EventForm.test.jsx
+```
+
+Run the React suite under the IST contract and two other browser timezones:
+
+```text
+TZ=Asia/Kolkata npm run test:frontend
+TZ=UTC npm run test:frontend
+TZ=America/Los_Angeles npm run test:frontend
 ```
 
 The organizer tests run without the platform suite:
@@ -50,9 +62,20 @@ node scripts/python.mjs backend/manage.py test modules.organizer --verbosity 2
   only identity source is `events.auth.authenticated_organizer(request)`.
 - Test-only repository doubles are patched inside test functions. Production
   handlers always import the canonical `DjangoEventStore`.
+- Edit/delete tests measure the complete handler denial path with a monotonic
+  clock and assert it stays under one second. The test output prints the observed
+  edit/delete denial times for the local run.
 - Tests use synthetic names, passwords and event details only. Logs are checked
   for submitted passwords and session identifiers.
 - The gateway test proves `X-Organizer-Id` and forwarding headers are stripped.
+- Organizer form dates and times are interpreted in IST, not the browser's local
+  timezone. `validation.test.js` uses fixed instants for future, past, same-day
+  and midnight boundaries, and CI repeats the React suite in UTC and
+  America/Los_Angeles.
+- Long boundary values in `EventForm.test.jsx` and `App.test.jsx` use one
+  `fireEvent.change` (a paste-style interaction) rather than typing 1,001
+  characters. No custom or enlarged test timeout is used; the normal Vitest
+  timeout applies.
 
 ## Adding a module test
 
@@ -72,6 +95,8 @@ node scripts/python.mjs backend/manage.py test modules.organizer --verbosity 2
 - Django system check and migration consistency.
 - Platform and organizer test suites as separate jobs.
 - Gateway and React tests plus the production build.
+- React validation and UI tests repeated under UTC and America/Los_Angeles to
+  prove the IST date/time rule is independent of the browser timezone.
 - A fresh-database smoke test through React, Node and Django.
 
 CI uses placeholder credentials supplied as environment values. It never uses a

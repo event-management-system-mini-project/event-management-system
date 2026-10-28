@@ -1,9 +1,23 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 
+import LoadingState from "./shared/LoadingState.jsx";
+import ErrorState from "./shared/ErrorState.jsx";
+import EmptyState from "./shared/EmptyState.jsx";
+
 const MONTHS = [
-  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ];
 
 function formatDate(isoDate) {
@@ -12,6 +26,7 @@ function formatDate(isoDate) {
   if (!parts) return isoDate;
 
   const month = MONTHS[Number(parts[2]) - 1] || parts[2];
+
   return `${Number(parts[3])} ${month} ${parts[1]}`;
 }
 
@@ -52,38 +67,34 @@ export default function UpcomingEvents({ api, refreshKey = 0 }) {
     <section className="panel" aria-labelledby="upcoming-events-heading">
       <div className="panel-heading">
         <p className="eyebrow">Open to everyone</p>
+
         <h2 id="upcoming-events-heading">Upcoming events</h2>
+
         <p className="panel-intro">
           Explore events scheduled for the future.
         </p>
       </div>
 
       {loading ? (
-        <p className="muted" role="status">
-          Loading upcoming events...
-        </p>
+        <LoadingState
+          message="Loading upcoming events..."
+          className="muted"
+        />
       ) : null}
 
       {error && !loading ? (
-        <div className="list-error" role="alert">
-          <p>{error}</p>
-          <button
-            className="text-button"
-            type="button"
-            onClick={loadEvents}
-          >
-            Try again
-          </button>
-        </div>
+        <ErrorState
+          message={error}
+          onRetry={loadEvents}
+          retryLabel="Try again"
+        />
       ) : null}
 
       {!loading && !error && events.length === 0 ? (
-        <div className="empty-state">
-          <p className="empty-title">No upcoming events</p>
-          <p className="muted">
-            Check back later for new events.
-          </p>
-        </div>
+        <EmptyState
+          title="No upcoming events"
+          message="Check back later for new events."
+        />
       ) : null}
 
       {!loading && !error && events.length > 0 ? (
@@ -94,6 +105,7 @@ export default function UpcomingEvents({ api, refreshKey = 0 }) {
                 <span className="event-date">
                   {formatDate(event.date)}
                 </span>
+
                 <span className="event-time">
                   {event.time.slice(0, 5)} IST
                 </span>
@@ -101,10 +113,13 @@ export default function UpcomingEvents({ api, refreshKey = 0 }) {
 
               <div className="event-body">
                 <h3>{event.name}</h3>
+
                 <p className="event-location">{event.location}</p>
+
                 <p className="event-description">
                   {event.description}
                 </p>
+
                 {Number.isInteger(event.registration_count) ? (
                   <p className="event-meta">
                     {event.registration_count === 1

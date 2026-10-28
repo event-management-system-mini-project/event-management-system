@@ -615,3 +615,174 @@ textarea[aria-invalid="true"] {
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* Shared accessible components — BL-16 */
+
+.skip-link {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  padding: 10px 14px;
+  transform: translateY(-150%);
+  background: var(--surface);
+  border: 2px solid var(--green);
+  border-radius: var(--radius);
+  color: var(--green);
+  font-weight: 700;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.shared-nav-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.shared-nav-list a {
+  display: inline-block;
+  padding: 6px 0;
+  font-weight: 600;
+  text-underline-offset: 4px;
+}
+
+.shared-nav-list a:focus-visible,
+.skip-link:focus-visible {
+  outline: 3px solid var(--green);
+  outline-offset: 3px;
+}
+
+.shared-loading,
+.shared-success {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+}
+
+.shared-loading {
+  color: var(--ink-soft);
+}
+
+.shared-error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--error-bg);
+  border-radius: var(--radius);
+  color: var(--error);
+}
+
+.shared-error p,
+.shared-success p {
+  margin: 0;
+}
+
+.shared-error button {
+  padding: 7px 12px;
+  background: var(--surface);
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+}
+
+.shared-empty {
+  padding: 18px 0 8px;
+}
+
+.shared-empty h3 {
+  margin-bottom: 4px;
+}
+
+.shared-empty p {
+  color: var(--ink-soft);
+}
+
+.shared-success {
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+.shared-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.shared-form-field input {
+  width: 100%;
+}
+
+.shared-form-field p {
+  margin: 0;
+}
+
+.shared-form-field [id$="-hint"] {
+  color: var(--ink-soft);
+  font-size: 12.5px;
+}
+
+.shared-form-field [id$="-error"] {
+  color: var(--error);
+  font-size: 13px;
+}
+
+.button-primary {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+
+.button-secondary {
+  background: transparent;
+  border-color: var(--line-strong);
+  color: var(--green);
+}
+
+.button-danger {
+  background: var(--error);
+  border-color: var(--error);
+  color: #fff;
+}
+
+.button-primary:hover:not(:disabled) {
+  background: var(--green-dark);
+  border-color: var(--green-dark);
+}
+
+.button-secondary:hover:not(:disabled) {
+  background: #f4f7f2;
+}
+
+.button-danger:hover:not(:disabled) {
+  background: #7d2525;
+}
+
+.shared-error button:focus-visible,
+.shared-error button:hover {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+@media (max-width: 620px) {
+  .site-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .shared-nav-list {
+    gap: 8px 16px;
+  }
+}

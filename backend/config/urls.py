@@ -61,9 +61,9 @@ urlpatterns = [
 handler400 = "events.http.bad_request"
 handler403 = "events.http.forbidden"
 handler404 = "events.http.not_found"
-<<<<<<< HEAD
-handler500 = "events.http.server_error"
-=======
+
 handler500 = "events.http.server_error"
 
->>>>>>> 98ea92855891b1b10116fd721d32e3f51b68d01c
+handler500 = "events.http.server_error"
+
+

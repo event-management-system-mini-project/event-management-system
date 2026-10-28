@@ -1,4 +1,5 @@
 from django.urls import include, path, re_path
+from django.contrib import admin
 from events.http import health, not_found
 from modules.organizer.event_views import (
     create_event,
@@ -45,16 +46,27 @@ def event_item(request, event_id):
 
 
 urlpatterns = [
+   
+    path("api/", include("modules.registrants.urls")),
     path("api/health", health),
     path("api/events", event_collection),
     path("api/events/<uuid:event_id>", event_item),
     path("api/", include("modules.organizer.urls")),
     path("api/", include("modules.browsing.urls")),
+ 
+    path("api/", include("modules.registrants.urls")),
+    path("api/", include("events.urls")),
+
     path("api/", include("modules.registration.urls")),
+ 
     re_path(r"^.*$", not_found),
 ]
 handler400 = "events.http.bad_request"
 handler403 = "events.http.forbidden"
 handler404 = "events.http.not_found"
+
 handler500 = "events.http.server_error"
+
+handler500 = "events.http.server_error"
+
 

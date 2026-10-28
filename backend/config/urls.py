@@ -1,4 +1,5 @@
 from django.urls import include, path, re_path
+from django.contrib import admin
 from events.http import health, not_found
 from modules.organizer.event_views import (
     create_event,
@@ -45,6 +46,8 @@ def event_item(request, event_id):
 
 
 urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("api/", include("modules.registrants.urls")),
     path("api/health", health),
     path("api/events", event_collection),
     path("api/events/<uuid:event_id>", event_item),

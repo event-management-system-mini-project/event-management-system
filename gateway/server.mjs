@@ -23,7 +23,10 @@ function headersFor(headers) {
   return Object.fromEntries(Object.entries(headers).filter(([name]) => !excluded.has(name)));
 }
 
-export function createGateway(upstream = "http://127.0.0.1:8000", timeout = 5000) {
+export function createGateway(upstream = "http://127.0.0.1:8000", timeout = 5000, publicHost = null) {
+  if (publicHost && !/^[a-zA-Z0-9.-]+(?::[0-9]+)?$/.test(publicHost)) {
+    throw new Error("Use a hostname with an optional port for the HTTPS public host.");
+  }
   const base = new URL(upstream);
   if (!["http:", "https:"].includes(base.protocol)) throw new Error("Use an HTTP(S) upstream.");
   const transport = base.protocol === "https:" ? https : http;
@@ -36,6 +39,10 @@ export function createGateway(upstream = "http://127.0.0.1:8000", timeout = 5000
     const target = new URL(base.origin + request.url);
     const headers = headersFor(request.headers);
     headers.host = base.host;
+    if (publicHost) {
+      headers.host = publicHost;
+      headers["x-forwarded-proto"] = "https";
+    }
     const proxy = transport.request(target, { method: request.method, headers }, (incoming) => {
       response.writeHead(incoming.statusCode, headersFor(incoming.headers));
       incoming.on("error", () => response.destroy());
@@ -53,7 +60,7 @@ export function createGateway(upstream = "http://127.0.0.1:8000", timeout = 5000
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const server = createGateway(process.env.DJANGO_UPSTREAM);
+  const server = createGateway(process.env.DJANGO_UPSTREAM, 5000, process.env.EMS_PUBLIC_HOST || null);
   const host = process.env.GATEWAY_HOST || "127.0.0.1";
   const port = Number(process.env.GATEWAY_PORT || 3000);
   server.listen(port, host, () => console.log(`API gateway: http://${host}:${server.address().port}`));

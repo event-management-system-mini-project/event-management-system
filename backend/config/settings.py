@@ -72,3 +72,11 @@ CSRF_FAILURE_VIEW = "events.http.csrf_failure"
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_SSL_REDIRECT = not DEBUG
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
+
+# Enable only behind the private deployment gateway, which overwrites this
+# header from fixed configuration rather than trusting client input.
+if os.getenv("EMS_TRUST_PROXY", "0") == "1":
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+SECURE_HSTS_PRELOAD = False

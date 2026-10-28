@@ -72,3 +72,23 @@ test("does not proxy non-API routes", async (t) => {
   assert.equal(response.status, 404);
   assert.equal((await response.json()).error.code, "not_found");
 });
+
+test("private TLS gateway overwrites spoofed forwarding headers with fixed configuration", async (t) => {
+  let headers;
+  const api = http.createServer((req, res) => {
+    headers = req.headers;
+    res.end('{}');
+  });
+  cleanup(t, api);
+  const gateway = createGateway(await listen(api), 5000, "events.example.com");
+  cleanup(t, gateway);
+  const response = await fetch((await listen(gateway)) + "/api/health", {
+    headers: { "x-forwarded-proto": "http", "x-forwarded-host": "attacker.example", "x-user-id": "spoofed" },
+  });
+  assert.equal(response.status, 200);
+  assert.equal(headers.host, "events.example.com");
+  assert.equal(headers["x-forwarded-proto"], "https");
+  assert.equal(headers["x-forwarded-host"], undefined);
+  assert.equal(headers["x-user-id"], undefined);
+  assert.throws(() => createGateway(undefined, 5000, "https://invalid/path"));
+});

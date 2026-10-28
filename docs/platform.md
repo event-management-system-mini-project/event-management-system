@@ -83,7 +83,8 @@ remain 404.
 
 Development uses local HTTP and `EMS_DEBUG=1`. Outside development, settings
 require a real secret and enable secure cookies and HTTPS redirection; actual
-hosting/TLS termination configuration and validation are separate deployment work.
+hosting/TLS termination configuration and checks are described in
+[deployment and recovery](operations.md).
 Do not enable proxy-header trust without a trusted TLS proxy and its own checks.
 
 ## Module interfaces

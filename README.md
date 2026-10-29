@@ -12,8 +12,8 @@ python scripts/bootstrap.py
 npm run dev
 ```
 
-Open **http://127.0.0.1:5173**. The connection panel checks the real path from
-React's development server through Node.js and Django to SQLite.
+Open **http://127.0.0.1:5173**. API requests pass from React's development server
+through Node.js and Django to SQLite.
 
 Setup creates an ignored `.env` with random local secrets, installs pinned
 dependencies, applies migrations and creates synthetic sample records. Existing
@@ -75,7 +75,7 @@ node scripts/python.mjs backend/manage.py makemigrations --check --dry-run
 - `backend/modules/browsing/`: public event queries and attendee browse screens' APIs.
 - `backend/modules/registration/`: registration and protected registrant APIs.
 - `gateway/`: small Node HTTP gateway and forwarding tests.
-- `frontend/`: React connection check and entry point for feature screens.
+- `frontend/`: React workspace and feature screens.
 - `docs/`: API contract, data rules and verification evidence.
 
 Feature URL modules register their own paths under `/api/`. The event collection
@@ -98,3 +98,19 @@ See [architecture and data decisions](docs/platform.md),
 Feature contributors open their own PRs for repository-owner review. Whole-app
 security, performance, backup/deployment and demo acceptance remain part of the
 sprint milestone checks.
+
+## Deployment and backups
+
+Docker Compose runs the production React build, HTTPS proxy, Node gateway,
+Django/Gunicorn, persistent SQLite and a backup worker. Backups run every 23 hours,
+retain seven verified snapshots and restore only into a separate new database.
+
+See [deployment, backups and recovery](docs/operations.md),
+[Sprint 2 platform evidence](docs/sprint-2-platform-verification.md) and the
+[final acceptance checklist](docs/final-acceptance.md).
+
+```text
+python -m unittest discover -s scripts -p test_db_backup.py -v
+node scripts/python.mjs scripts/backup_smoke.py
+python scripts/deploy_smoke.py
+```

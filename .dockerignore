@@ -1,0 +1,14 @@
+.git
+.venv
+.env
+.env.*
+node_modules
+frontend/dist
+data
+backups
+restores
+tmp
+**/__pycache__
+deploy/.env
+deploy/evidence
+*.docx

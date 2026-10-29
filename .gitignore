@@ -10,3 +10,7 @@ __pycache__/
 .coverage
 .pytest_cache/
 tmp/
+backups/
+restores/
+deploy/.env
+deploy/evidence/

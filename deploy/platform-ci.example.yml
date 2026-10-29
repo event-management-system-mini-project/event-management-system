@@ -1,0 +1,40 @@
+name: Platform operations
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    name: Backup and isolated restore tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m unittest discover -s scripts -p test_db_backup.py -v
+      - run: python -m pip install -r backend/requirements.txt
+      - run: python scripts/backup_smoke.py
+
+  deployment:
+    name: HTTPS deployment and scheduled-backup smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python scripts/deploy_smoke.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: infrastructure-evidence
+          path: deploy/evidence/infrastructure.json

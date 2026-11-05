@@ -1,0 +1,44 @@
+
+> event-management-system@0.1.0 test:frontend
+> vitest run --config frontend/vitest.config.mjs --coverage
+
+
+ RUN  v5.0.5 C:/Users/ibrah/OneDrive/Documents/SEM5/SE_jackfruit/project-documentation/frontend
+      Coverage enabled with v8
+
+
+ Test Files  6 passed (6)
+      Tests  42 passed (42)
+   Start at  11:08:19
+   Duration  12.03s (environment 59%, tests 19%, setup 16%, transform 3%, import 2%, worker 1%)
+
+ % Coverage report from v8
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   88.71 |    77.96 |   83.16 |   91.45 |                   
+ src               |   86.06 |    77.51 |   72.91 |   87.76 |                   
+  App.jsx          |   85.57 |     61.4 |   85.71 |   88.54 | ...19,220-225,288 
+  api.js           |   70.27 |    82.14 |   30.76 |   69.44 | 44,55,75-120      
+  main.jsx         |       0 |      100 |     100 |       0 | 7                 
+  validation.js    |    98.3 |    95.45 |     100 |     100 | 37-44             
+ src/components    |   92.12 |     77.9 |   95.34 |   96.62 |                   
+  ...irmDelete.jsx |   72.72 |       50 |      80 |   88.88 | 15                
+  EventForm.jsx    |   96.96 |    91.17 |     100 |   96.66 | 95-96             
+  EventList.jsx    |      90 |    77.27 |     100 |     100 | 10-11,39,71       
+  LoginForm.jsx    |   85.71 |    57.69 |     100 |     100 | 15-25,58-80       
+  ...ationForm.jsx |     100 |       75 |     100 |     100 | 24-26             
+  ...ingEvents.jsx |   89.28 |    78.04 |   88.88 |      92 | 36,56             
+ ...ponents/shared |   86.66 |    79.54 |      80 |   86.66 |                   
+  ErrorState.jsx   |     100 |       75 |     100 |     100 | 21                
+  FormField.jsx    |     100 |       65 |     100 |     100 | 27-54             
+  SharedButton.jsx |     100 |       90 |     100 |     100 | 37                
+  ...tExamples.jsx |       0 |      100 |       0 |       0 | 14-29             
+-------------------|---------|----------|---------|---------|-------------------
+
+=============================== Coverage summary ===============================
+Statements   : 88.71% ( 338/381 )
+Branches     : 77.96% ( 276/354 )
+Functions    : 83.16% ( 84/101 )
+Lines        : 91.45% ( 321/351 )
+================================================================================

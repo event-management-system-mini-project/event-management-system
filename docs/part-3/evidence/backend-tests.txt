@@ -1,0 +1,117 @@
+Creating test database for alias 'default' ('file:memorydb_default?mode=memory&cache=shared')...
+
+Found 79 test(s).
+Operations to perform:
+  Synchronize unmigrated apps: rest_framework
+  Apply all migrations: auth, contenttypes, events, sessions
+Synchronizing apps without migrations:
+  Creating tables...
+    Running deferred SQL...
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0001_initial... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying auth.0009_alter_user_last_name_max_length... OK
+  Applying auth.0010_alter_group_name_max_length... OK
+  Applying auth.0011_update_proxy_permissions... OK
+  Applying auth.0012_alter_user_first_name_max_length... OK
+  Applying events.0001_initial... OK
+test_anonymous_or_spoofed_identity_is_rejected (events.tests.test_platform.InterfaceTests.test_anonymous_or_spoofed_identity_is_rejected) ... ok
+test_database_failure_does_not_leak_internal_details (events.tests.test_platform.InterfaceTests.test_database_failure_does_not_leak_internal_details) ... ok
+test_database_health_and_safe_not_found (events.tests.test_platform.InterfaceTests.test_database_health_and_safe_not_found) ... ok
+test_demo_data_is_synthetic_future_dated_and_idempotent (events.tests.test_platform.InterfaceTests.test_demo_data_is_synthetic_future_dated_and_idempotent) ... ok
+test_demo_seed_is_disabled_outside_development (events.tests.test_platform.InterfaceTests.test_demo_seed_is_disabled_outside_development) ... ok
+test_health_is_read_only (events.tests.test_platform.InterfaceTests.test_health_is_read_only) ... ok
+test_verified_user_is_used_and_inactive_user_is_rejected (events.tests.test_platform.InterfaceTests.test_verified_user_is_used_and_inactive_user_is_rejected) ... ok
+test_database_checks_reject_bypassing_model_validation (events.tests.test_platform.ModelTests.test_database_checks_reject_bypassing_model_validation) ... ok
+test_duplicate_constraint_protects_bulk_inserts (events.tests.test_platform.ModelTests.test_duplicate_constraint_protects_bulk_inserts) ... ok
+test_event_length_boundaries (events.tests.test_platform.ModelTests.test_event_length_boundaries) ... ok
+test_generated_email_stays_normalized_after_update (events.tests.test_platform.ModelTests.test_generated_email_stays_normalized_after_update) ... ok
+test_name_and_location_are_trimmed (events.tests.test_platform.ModelTests.test_name_and_location_are_trimmed) ... ok
+test_past_event_is_rejected (events.tests.test_platform.ModelTests.test_past_event_is_rejected) ... ok
+test_registration_validation_and_normalization (events.tests.test_platform.ModelTests.test_registration_validation_and_normalization) ... ok
+test_relationships_protect_organizer_and_cascade_explicit_event_delete (events.tests.test_platform.ModelTests.test_relationships_protect_organizer_and_cascade_explicit_event_delete) ... ok
+test_same_email_can_register_for_different_events (events.tests.test_platform.ModelTests.test_same_email_can_register_for_different_events) ... ok
+test_anonymous_and_non_owner_access_rejected (events.tests.tests.EventRegistrationIssuesTests.test_anonymous_and_non_owner_access_rejected) ... ok
+test_owner_can_view_registrant_list (events.tests.tests.EventRegistrationIssuesTests.test_owner_can_view_registrant_list) ... ok
+test_registration_performance_under_3_seconds (events.tests.tests.EventRegistrationIssuesTests.test_registration_performance_under_3_seconds) ... ok
+test_csrf_is_required_for_login (modules.organizer.tests.test_auth.SessionTests.test_csrf_is_required_for_login) ... ok
+test_identity_headers_never_authenticate_a_session (modules.organizer.tests.test_auth.SessionTests.test_identity_headers_never_authenticate_a_session) ... ok
+test_inactive_account_cannot_log_in (modules.organizer.tests.test_auth.SessionTests.test_inactive_account_cannot_log_in) ... ok
+test_invalid_credentials_return_a_clear_but_generic_error (modules.organizer.tests.test_auth.SessionTests.test_invalid_credentials_return_a_clear_but_generic_error) ... ok
+test_login_failure_does_not_log_the_password_or_session_secret (modules.organizer.tests.test_auth.SessionTests.test_login_failure_does_not_log_the_password_or_session_secret) ... ok
+test_login_uses_a_server_session_and_never_returns_a_password (modules.organizer.tests.test_auth.SessionTests.test_login_uses_a_server_session_and_never_returns_a_password) ... ok
+test_logout_removes_access_to_protected_operations (modules.organizer.tests.test_auth.SessionTests.test_logout_removes_access_to_protected_operations) ... ok
+test_missing_fields_and_invalid_json_are_field_or_payload_errors (modules.organizer.tests.test_auth.SessionTests.test_missing_fields_and_invalid_json_are_field_or_payload_errors) ... ok
+test_session_is_anonymous_before_login_and_sets_csrf_cookie (modules.organizer.tests.test_auth.SessionTests.test_session_is_anonymous_before_login_and_sets_csrf_cookie) ... ok
+test_wrong_methods_use_json_errors_and_allow_headers (modules.organizer.tests.test_auth.SessionTests.test_wrong_methods_use_json_errors_and_allow_headers) ... ok
+test_anonymous_delete_is_denied_within_one_second_and_changes_nothing (modules.organizer.tests.test_edit_delete.OwnerDeleteTests.test_anonymous_delete_is_denied_within_one_second_and_changes_nothing) ... ok
+test_database_failure_preserves_event_and_registrations (modules.organizer.tests.test_edit_delete.OwnerDeleteTests.test_database_failure_preserves_event_and_registrations) ... ok
+test_delete_requires_csrf (modules.organizer.tests.test_edit_delete.OwnerDeleteTests.test_delete_requires_csrf) ... ok
+test_deleted_identifier_is_not_found_on_a_later_get (modules.organizer.tests.test_edit_delete.OwnerDeleteTests.test_deleted_identifier_is_not_found_on_a_later_get) ... ok
+test_missing_event_returns_404 (modules.organizer.tests.test_edit_delete.OwnerDeleteTests.test_missing_event_returns_404) ... ok
+test_nonowner_delete_is_denied_within_one_second_and_changes_nothing (modules.organizer.tests.test_edit_delete.OwnerDeleteTests.test_nonowner_delete_is_denied_within_one_second_and_changes_nothing) ... ok
+test_owner_delete_removes_only_the_event_and_its_registrations (modules.organizer.tests.test_edit_delete.OwnerDeleteTests.test_owner_delete_removes_only_the_event_and_its_registrations) ... ok
+test_spoofed_identity_header_does_not_authorize_a_nonowner (modules.organizer.tests.test_edit_delete.OwnerDeleteTests.test_spoofed_identity_header_does_not_authorize_a_nonowner) ... ok
+test_anonymous_edit_is_denied_within_one_second_and_changes_nothing (modules.organizer.tests.test_edit_delete.OwnerEditTests.test_anonymous_edit_is_denied_within_one_second_and_changes_nothing) ... ok
+test_client_supplied_owner_cannot_change_ownership (modules.organizer.tests.test_edit_delete.OwnerEditTests.test_client_supplied_owner_cannot_change_ownership) ... ok
+test_database_failure_leaves_the_original_row_unchanged (modules.organizer.tests.test_edit_delete.OwnerEditTests.test_database_failure_leaves_the_original_row_unchanged) ... ok
+test_edit_requires_csrf_and_accepts_a_valid_token (modules.organizer.tests.test_edit_delete.OwnerEditTests.test_edit_requires_csrf_and_accepts_a_valid_token) ... ok
+test_missing_event_returns_404 (modules.organizer.tests.test_edit_delete.OwnerEditTests.test_missing_event_returns_404) ... ok
+test_nonowner_edit_is_denied_within_one_second_and_changes_nothing (modules.organizer.tests.test_edit_delete.OwnerEditTests.test_nonowner_edit_is_denied_within_one_second_and_changes_nothing) ... ok
+test_owner_update_is_persisted_and_returns_standard_event (modules.organizer.tests.test_edit_delete.OwnerEditTests.test_owner_update_is_persisted_and_returns_standard_event) ... ok
+test_validation_errors_leave_the_original_row_unchanged (modules.organizer.tests.test_edit_delete.OwnerEditTests.test_validation_errors_leave_the_original_row_unchanged) ... ok
+test_client_supplied_organizer_id_cannot_choose_the_owner (modules.organizer.tests.test_events.EventCreationTests.test_client_supplied_organizer_id_cannot_choose_the_owner) ... ok
+test_database_failure_returns_a_clear_failure_and_no_event (modules.organizer.tests.test_events.EventCreationTests.test_database_failure_returns_a_clear_failure_and_no_event) ... ok
+test_length_and_required_boundaries (modules.organizer.tests.test_events.EventCreationTests.test_length_and_required_boundaries) ... ok
+test_missing_authentication_is_denied_before_the_repository (modules.organizer.tests.test_events.EventCreationTests.test_missing_authentication_is_denied_before_the_repository) ... ok
+test_organizer_list_contains_only_own_events_ascending (modules.organizer.tests.test_events.EventCreationTests.test_organizer_list_contains_only_own_events_ascending) ... ok
+test_past_and_malformed_date_time_are_rejected (modules.organizer.tests.test_events.EventCreationTests.test_past_and_malformed_date_time_are_rejected) ... ok
+test_server_side_identity_wins_even_when_header_is_spoofed (modules.organizer.tests.test_events.EventCreationTests.test_server_side_identity_wins_even_when_header_is_spoofed) ... ok
+test_unauthenticated_list_is_denied_before_the_repository (modules.organizer.tests.test_events.EventCreationTests.test_unauthenticated_list_is_denied_before_the_repository) ... ok
+test_valid_event_is_committed_to_the_authenticated_organizer (modules.organizer.tests.test_events.EventCreationTests.test_valid_event_is_committed_to_the_authenticated_organizer) ... ok
+test_duplicate_email_returns_a_clear_error_and_no_second_record (modules.registration.tests.test_registration.RegistrationRouteTests.test_duplicate_email_returns_a_clear_error_and_no_second_record) ... ok
+test_missing_fields_are_rejected_without_a_record (modules.registration.tests.test_registration.RegistrationRouteTests.test_missing_fields_are_rejected_without_a_record) ... ok
+test_unknown_event_returns_404_without_a_record (modules.registration.tests.test_registration.RegistrationRouteTests.test_unknown_event_returns_404_without_a_record) ... ok
+test_valid_registration_is_stored_and_returned (modules.registration.tests.test_registration.RegistrationRouteTests.test_valid_registration_is_stored_and_returned) ... ok
+test_empty_list_returns_success (modules.browsing.test.UpcomingEventsTests.test_empty_list_returns_success) ... ok
+test_event_details_query_count_stays_bounded_with_registrations (modules.browsing.test.UpcomingEventsTests.test_event_details_query_count_stays_bounded_with_registrations) ... ok
+test_event_details_returns_404_for_unknown_event (modules.browsing.test.UpcomingEventsTests.test_event_details_returns_404_for_unknown_event) ... ok
+test_event_details_returns_registration_count_without_personal_data (modules.browsing.test.UpcomingEventsTests.test_event_details_returns_registration_count_without_personal_data) ... ok
+test_events_are_sorted_by_date_and_time (modules.browsing.test.UpcomingEventsTests.test_events_are_sorted_by_date_and_time) ... ok
+test_list_query_count_stays_bounded_as_event_count_grows (modules.browsing.test.UpcomingEventsTests.test_list_query_count_stays_bounded_as_event_count_grows) ... ok
+test_past_events_are_excluded (modules.browsing.test.UpcomingEventsTests.test_past_events_are_excluded) ... ok
+test_registration_count_is_included_without_personal_data (modules.browsing.test.UpcomingEventsTests.test_registration_count_is_included_without_personal_data) ... ok
+test_committed_data_survives_process_exit_and_uncommitted_crash_rolls_back (events.tests.test_platform.RestartTests.test_committed_data_survives_process_exit_and_uncommitted_crash_rolls_back) ... ok
+test_database_connection_enables_foreign_keys_and_full_sync (events.tests.test_platform.TransactionTests.test_database_connection_enables_foreign_keys_and_full_sync) ... ok
+test_event_commit_failure_returns_no_result_and_rolls_back (events.tests.test_platform.TransactionTests.test_event_commit_failure_returns_no_result_and_rolls_back) ... ok
+test_event_store_does_not_accept_client_supplied_owner_override (events.tests.test_platform.TransactionTests.test_event_store_does_not_accept_client_supplied_owner_override) ... ok
+test_exception_after_writes_rolls_back_both_records (events.tests.test_platform.TransactionTests.test_exception_after_writes_rolls_back_both_records) ... ok
+test_foreign_key_rejects_an_orphan_registration (events.tests.test_platform.TransactionTests.test_foreign_key_rejects_an_orphan_registration) ... ok
+test_nested_transaction_cannot_acknowledge_uncommitted_data (events.tests.test_platform.TransactionTests.test_nested_transaction_cannot_acknowledge_uncommitted_data) ... ok
+test_registration_commit_failure_leaves_existing_event_intact (events.tests.test_platform.TransactionTests.test_registration_commit_failure_leaves_existing_event_intact) ... ok
+test_success_is_returned_after_commit (events.tests.test_platform.TransactionTests.test_success_is_returned_after_commit) ... ok
+test_delete_commit_failure_returns_503_and_rolls_back (modules.organizer.tests.test_edit_delete.EditDeleteCommitFailureTests.test_delete_commit_failure_returns_503_and_rolls_back) ... ok
+test_update_commit_failure_returns_503_and_rolls_back (modules.organizer.tests.test_edit_delete.EditDeleteCommitFailureTests.test_update_commit_failure_returns_503_and_rolls_back) ... ok
+test_commit_failure_never_returns_created_event (modules.organizer.tests.test_events.CommitFailureTests.test_commit_failure_never_returns_created_event) ... ok
+test_csrf_protects_event_creation (modules.organizer.tests.test_events.CommitFailureTests.test_csrf_protects_event_creation) ... ok
+
+----------------------------------------------------------------------
+Ran 79 tests in 35.286s
+
+OK
+Destroying test database for alias 'default' ('file:memorydb_default?mode=memory&cache=shared')...
+
+  Applying sessions.0001_initial... OK
+System check identified no issues (0 silenced).
+anonymous delete denial: 1.5 ms
+nonowner delete denial: 1.7 ms
+anonymous edit denial: 1.6 ms
+nonowner edit denial: 1.8 ms

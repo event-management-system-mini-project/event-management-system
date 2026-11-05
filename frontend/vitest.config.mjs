@@ -8,5 +8,12 @@ export default defineConfig({
     include: ["src/**/*.test.{js,jsx}"],
     setupFiles: ["./src/test/setup.js"],
     restoreMocks: true,
+    coverage: {
+      provider: "v8",
+      include: ["src/**/*.{js,jsx}"],
+      exclude: ["src/**/*.test.{js,jsx}", "src/test/**"],
+      reporter: ["text", "json-summary", "json", "html"],
+      reportsDirectory: "../docs/part-3/coverage/frontend",
+    },
   },
 });

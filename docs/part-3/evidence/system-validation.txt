@@ -1,0 +1,2 @@
+Synthetic fixtures ready: demo-organizer-a, demo-organizer-b. The local password is in EMS_DEMO_PASSWORD; it is not logged.
+{"passed": 12, "failed": 7}

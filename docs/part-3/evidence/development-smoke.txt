@@ -1,0 +1,2 @@
+PASS: fresh migrations and synthetic fixtures.
+PASS: frontend dev server -> Node gateway -> Django -> SQLite: {'status': 'ok', 'service': 'django', 'database': 'ok'}

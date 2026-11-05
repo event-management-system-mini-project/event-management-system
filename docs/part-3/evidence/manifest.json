@@ -1,0 +1,12 @@
+{
+  "baseline": "902288c",
+  "python": "3.11.9",
+  "node": "v24.20.0",
+  "execution_date": "2026-11-19",
+  "automated_tests": 133,
+  "system_checks": 19,
+  "system_pass": 12,
+  "system_fail": 7,
+  "scope": "Required Part 3 testing and reports only. Optional Sprint 3 development excluded.",
+  "document_QA": "Word PDF export and Poppler PNG inspection; packaged renderer lacked LibreOffice."
+}

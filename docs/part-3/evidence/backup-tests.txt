@@ -1,0 +1,13 @@
+test_corrupt_snapshot_is_rejected_before_restore (test_db_backup.BackupTests.test_corrupt_snapshot_is_rejected_before_restore) ... ok
+test_failed_snapshot_does_not_remove_previous_backup (test_db_backup.BackupTests.test_failed_snapshot_does_not_remove_previous_backup) ... ok
+test_foreign_key_corruption_rejects_backup (test_db_backup.BackupTests.test_foreign_key_corruption_rejects_backup) ... ok
+test_missing_database_is_not_created_and_failed_schedule_is_unhealthy (test_db_backup.BackupTests.test_missing_database_is_not_created_and_failed_schedule_is_unhealthy) ... ok
+test_online_snapshot_includes_committed_wal_and_excludes_pending_writes (test_db_backup.BackupTests.test_online_snapshot_includes_committed_wal_and_excludes_pending_writes) ... ok
+test_restore_never_overwrites_live_existing_or_backup_paths (test_db_backup.BackupTests.test_restore_never_overwrites_live_existing_or_backup_paths) ... ok
+test_retention_only_removes_old_completed_pairs (test_db_backup.BackupTests.test_retention_only_removes_old_completed_pairs) ... ok
+test_schedule_creates_initial_skips_fresh_and_replaces_stale_snapshot (test_db_backup.BackupTests.test_schedule_creates_initial_skips_fresh_and_replaces_stale_snapshot) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.588s
+
+OK

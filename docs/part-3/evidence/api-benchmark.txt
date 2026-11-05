@@ -1,0 +1,12 @@
+7 objects imported automatically (use -v 2 for details).
+
+BL17_SYNTHETIC_FIXTURES_READY
+BL-17 API benchmark complete.
+Events: 100; measured iterations: 15
+Report: docs\part-3\evidence\api-benchmark.json
+event_list_api: median=10.927 ms, p95=27.494 ms, n=15
+event_details_api: median=7.373 ms, p95=30.018 ms, n=15
+registration_api: median=20.147 ms, p95=52.331 ms, n=15
+nonowner_edit_denial_api: median=10.161 ms, p95=28.619 ms, n=15
+nonowner_delete_denial_api: median=8.279 ms, p95=28.788 ms, n=15
+API timings only; browser-visible timing was not measured.

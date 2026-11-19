@@ -1,0 +1,22 @@
+✔ forwards API body, cookies, CSRF and status without accepting identity headers (61.8481ms)
+✔ returns safe JSON when Django is unavailable (13.7975ms)
+✔ does not proxy non-API routes (6.951ms)
+✔ private TLS gateway overwrites spoofed forwarding headers with fixed configuration (8.6539ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 209.6441
+ℹ start of coverage report
+ℹ ------------------------------------------------------------
+ℹ file        | line % | branch % | funcs % | uncovered lines
+ℹ ------------------------------------------------------------
+ℹ gateway     |        |          |         | 
+ℹ  server.mjs |  91.04 |    79.17 |   69.23 | 54 63-67
+ℹ ------------------------------------------------------------
+ℹ all files   |  91.04 |    79.17 |   69.23 | 
+ℹ ------------------------------------------------------------
+ℹ end of coverage report

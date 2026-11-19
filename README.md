@@ -1,5 +1,7 @@
 # Event Management System
 
+Part 3 testing deliverables: [updated cases, reports and measured coverage](docs/part-3/README.md).
+
 A full-stack event platform built by **Team 7** for the Software Engineering
 mini-project. Organizers sign in, create events, and manage only the events they
 own. Attendees browse upcoming events and register with their name and email.

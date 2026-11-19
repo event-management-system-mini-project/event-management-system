@@ -1,0 +1,3 @@
+PASS: canonical migrations and direct synthetic seeding without feature servers.
+PASS: two scheduled snapshots; checksum, counts and foreign keys verified.
+PASS: isolated restore verified; original database unchanged.

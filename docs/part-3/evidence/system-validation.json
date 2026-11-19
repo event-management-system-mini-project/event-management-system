@@ -1,0 +1,138 @@
+{
+  "executed_at": "2026-11-19T05:39:24.305219+00:00",
+  "checks": [
+    {
+      "case": "health",
+      "expected": 200,
+      "actual": 200,
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "case": "public_list",
+      "expected": 200,
+      "actual": 200,
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "case": "public_detail",
+      "expected": 200,
+      "actual": 200,
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "case": "anonymous_create_denied",
+      "expected": 401,
+      "actual": 401,
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "case": "valid_registration",
+      "expected": 201,
+      "actual": 201,
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "case": "duplicate_rejected",
+      "expected": 400,
+      "actual": 400,
+      "result": "PASS",
+      "note": "Current route returns 400; documented canonical contract specifies 409."
+    },
+    {
+      "case": "duplicate_single_row",
+      "expected": 1,
+      "actual": 1,
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "case": "missing_name",
+      "expected": 400,
+      "actual": 400,
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "case": "invalid_email",
+      "expected": 400,
+      "actual": 400,
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "case": "long_name",
+      "expected": 400,
+      "actual": 400,
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "case": "null_name_validation",
+      "expected": 400,
+      "actual": 500,
+      "result": "FAIL",
+      "note": ""
+    },
+    {
+      "case": "database_failure",
+      "expected": 503,
+      "actual": 500,
+      "result": "FAIL",
+      "note": ""
+    },
+    {
+      "case": "anonymous_registrants_denied",
+      "expected": 403,
+      "actual": 403,
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "case": "forged_identity_denied",
+      "expected": 403,
+      "actual": 200,
+      "result": "FAIL",
+      "note": "A supplied organizer UUID must not authenticate the request."
+    },
+    {
+      "case": "session_owner_registrants",
+      "expected": 200,
+      "actual": 403,
+      "result": "FAIL",
+      "note": ""
+    },
+    {
+      "case": "frontend_registrants_route",
+      "expected": 200,
+      "actual": 404,
+      "result": "FAIL",
+      "note": ""
+    },
+    {
+      "case": "canonical_registration_route",
+      "expected": 201,
+      "actual": 404,
+      "result": "FAIL",
+      "note": ""
+    },
+    {
+      "case": "registration_form_connected",
+      "expected": true,
+      "actual": true,
+      "result": "PASS",
+      "note": ""
+    },
+    {
+      "case": "details_screen_connected",
+      "expected": true,
+      "actual": false,
+      "result": "FAIL",
+      "note": "No details-screen handler is connected; public detail API alone is insufficient."
+    }
+  ]
+}

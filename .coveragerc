@@ -1,0 +1,18 @@
+[run]
+branch = True
+source = backend,scripts
+relative_files = True
+omit =
+    */tests/*
+    */test.py
+    */test_*.py
+    */migrations/*
+    */__init__.py
+    backend/manage.py
+    scripts/bootstrap.py
+    scripts/*smoke.py
+    scripts/bl17_benchmark.py
+    scripts/part3_validate.py
+
+[report]
+show_missing = True

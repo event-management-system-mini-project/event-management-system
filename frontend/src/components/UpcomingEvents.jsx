@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import LoadingState from "./shared/LoadingState.jsx";
 import ErrorState from "./shared/ErrorState.jsx";
 import EmptyState from "./shared/EmptyState.jsx";
+import RegistrationForm from "./RegistrationForm.jsx";
 
 const MONTHS = [
   "Jan",
@@ -42,9 +43,10 @@ export default function UpcomingEvents({ api, refreshKey = 0 }) {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [registeringId, setRegisteringId] = useState(null);
 
-  const loadEvents = useCallback(async () => {
-    setLoading(true);
+  const loadEvents = useCallback(async ({ background = false } = {}) => {
+    if (!background) setLoading(true);
     setError("");
 
     try {
@@ -55,7 +57,7 @@ export default function UpcomingEvents({ api, refreshKey = 0 }) {
         err.message || "Upcoming events could not be loaded. Try again.",
       );
     } finally {
-      setLoading(false);
+      if (!background) setLoading(false);
     }
   }, [api, refreshKey]);
 
@@ -126,6 +128,20 @@ export default function UpcomingEvents({ api, refreshKey = 0 }) {
                       ? "1 registration"
                       : `${event.registration_count} registrations`}
                   </p>
+                ) : null}
+                <button
+                  className="button secondary"
+                  type="button"
+                  aria-expanded={registeringId === event.id}
+                  aria-controls={`registration-${event.id}`}
+                  onClick={() => setRegisteringId(registeringId === event.id ? null : event.id)}
+                >
+                  {registeringId === event.id ? `Close registration for ${event.name}` : `Register for ${event.name}`}
+                </button>
+                {registeringId === event.id ? (
+                  <section id={`registration-${event.id}`} aria-label={`Register for ${event.name}`}>
+                    <RegistrationForm eventId={event.id} api={api} onRegistered={() => loadEvents({ background: true })} />
+                  </section>
                 ) : null}
               </div>
             </li>

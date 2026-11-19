@@ -1,6 +1,7 @@
 import React, { useId, useState } from "react";
+import * as defaultApi from "../api.js";
 
-export default function RegistrationForm({ eventId, onRegistered }) {
+export default function RegistrationForm({ eventId, onRegistered, api = defaultApi }) {
   const fieldId = useId();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -15,23 +16,14 @@ export default function RegistrationForm({ eventId, onRegistered }) {
     setBusy(true);
 
     try {
-      const response = await fetch(`/api/events/${eventId}/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email }),
-      });
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw data;
-      }
+      const data = await api.registerForEvent(eventId, { name: name.trim(), email: email.trim() });
 
       setSuccess(true);
       setName("");
       setEmail("");
       if (onRegistered) onRegistered(data);
     } catch (err) {
-      setError(err.detail || err.fields?.email?.[0] || "Registration failed.");
+      setError(err.fields?.email?.[0] || err.message || "Registration failed.");
     } finally {
       setBusy(false);
     }
@@ -49,6 +41,8 @@ export default function RegistrationForm({ eventId, onRegistered }) {
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
+          maxLength={100}
+          disabled={busy}
         />
       </div>
 
@@ -60,6 +54,8 @@ export default function RegistrationForm({ eventId, onRegistered }) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          maxLength={254}
+          disabled={busy}
         />
       </div>
 

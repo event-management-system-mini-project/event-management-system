@@ -59,11 +59,11 @@ async function request(path, { method = "GET", body } = {}) {
     const error = data && data.error ? data.error : {};
 
     throw new ApiError(
-      error.message || "The request could not be completed.",
+      error.message || data?.detail || "The request could not be completed.",
       {
         status: response.status,
         code: error.code || "request_failed",
-        fields: error.fields || null,
+        fields: error.fields || data?.fields || null,
       },
     );
   }

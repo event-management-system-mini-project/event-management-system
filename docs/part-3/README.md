@@ -1,6 +1,6 @@
 # Part 3 testing deliverables
 
-Execution recorded: 2026-11-19T05:39:24.305219+00:00. Tested baseline: main 902288c with report instrumentation only. Planned course testing window: 2-6 November 2026. These are actual November 19 execution records, not historical execution claims.
+Execution recorded: 2026-11-19T06:40:15.720884+00:00. Browser follow-up: 19 November 2026. Tested baseline: main 42f9afd with report instrumentation only. Planned course testing window: 2-6 November 2026. These are actual November 19 execution records, not historical execution claims.
 
 This folder contains the updated test-case document/CSV and the four requested reports. Product fixes are not included in this reporting change.
 
@@ -11,7 +11,7 @@ This folder contains the updated test-case document/CSV and the four requested r
 - [Code coverage report](Code_Coverage_Report.md)
 - [Branch coverage report](Branch_Coverage_Report.md)
 
-Test-case status totals (55 cases): {'MODULE PASS': 32, 'NOT RUN': 11, 'FAIL': 7, 'PARTIAL': 5}. MODULE PASS describes module evidence, not a full browser execution. See the CSV for actual results and original expected outcomes. The original root Test Plan is retained as the baseline; this revision is its Part 3 execution/amendment companion.
+Test-case status totals (55 cases): {'PASS': 47, 'FAIL': 7, 'BLOCKED': 1}. All case results are filled in the original root Test Plan and the companion CSV/DOCX. PASS uses the execution level specified by each case; BLOCKED is not a pass.
 
 Automated regression: 133 passed. System validation fails release acceptance; open defects and unexecuted checks are explicitly recorded. Known defects require fixes and retesting before final acceptance. Optional Sprint 3 development is excluded. Git commit author date is separately requested as 5 November; report execution dates remain accurate.
 
@@ -38,3 +38,7 @@ node scripts/python.mjs scripts/part3_validate.py
 The final command returns exit 1 while its expected requirement checks fail.
 Do not reinterpret that exit as a passing result. Each new execution must update
 report dates, case statuses and the evidence manifest using the new actual results.
+
+## Completed follow-up execution
+
+Browser workflows and current Docker HTTPS/restart/backup smoke were executed. Evidence is in `evidence/browser-results.json` and `evidence/deployment.json`. Timing was 230 ms for one local list reload and 320 ms for one local registration confirmation (automation-inclusive upper bounds); these observations are not load-test or multi-browser guarantees. No optional development was done.

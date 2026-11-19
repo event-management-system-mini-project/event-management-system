@@ -1,0 +1,88 @@
+{
+  "executed_at": "2026-11-19T07:04:43.691Z",
+  "environment": "In-app Chromium, local Vite -> Node -> Django -> disposable SQLite; test port 5283 included in trusted CSRF origins",
+  "checks": [
+    {
+      "case": "NFR_01",
+      "result": "PASS",
+      "elapsed_ms": 230,
+      "actual": "Local page reload to observed event list; automation-inclusive elapsed time."
+    },
+    {
+      "case": "REQ4_ST_01",
+      "result": "PASS",
+      "actual": "Guest inline registration confirms success and refreshes count to one."
+    },
+    {
+      "case": "NFR_02",
+      "result": "PASS",
+      "elapsed_ms": 320,
+      "actual": "Local submit to observed confirmation; automation-inclusive upper bound."
+    },
+    {
+      "case": "REQ4_ST_02",
+      "result": "PASS",
+      "actual": "Repeated email rejected with count unchanged at one."
+    },
+    {
+      "case": "REQ1_ST_02",
+      "result": "PASS",
+      "actual": "Empty create form rejected with field errors."
+    },
+    {
+      "case": "REQ1_ST_01",
+      "result": "PASS",
+      "actual": "Login and real browser creation succeeded; dated 2099-02-02 12:00, visible in owner and public lists."
+    },
+    {
+      "case": "REQ2_ST_01",
+      "result": "PASS",
+      "actual": "Changed location through edit form; Updated Hall appeared in both public and owner lists."
+    },
+    {
+      "case": "REQ2_UT_03",
+      "result": "PASS",
+      "actual": "Incomplete edited name rejected with a required-field error."
+    },
+    {
+      "case": "delete_cancel",
+      "result": "PASS",
+      "actual": "Cancellation preserved the synthetic event."
+    },
+    {
+      "case": "REQ2_ST_02",
+      "result": "PASS",
+      "actual": "Confirmed owner delete removed event; nonowner denial verified separately by real backend tests."
+    },
+    {
+      "case": "REQ3_ST_02",
+      "result": "PASS",
+      "actual": "After the only remaining synthetic event was made past, browser displayed No upcoming events; no past event card was shown."
+    },
+    {
+      "case": "REQ3_UT_03",
+      "result": "PASS",
+      "actual": "Empty upcoming list displays a clear message without an error."
+    },
+    {
+      "case": "REQ3_ST_01",
+      "result": "FAIL",
+      "actual": "Inspected public cards: no event-details link or screen exists."
+    },
+    {
+      "case": "REQ3_IT_01",
+      "result": "PASS",
+      "actual": "Real browser displayed created/edited public event data and refreshed after deletion."
+    },
+    {
+      "case": "REQ4_IT_01",
+      "result": "PASS",
+      "actual": "Browser form posted name/email to real gateway/backend and showed confirmed count."
+    },
+    {
+      "case": "REQ1_IT_01",
+      "result": "PASS",
+      "actual": "Real create form posted valid event data; public and owner lists updated."
+    }
+  ]
+}

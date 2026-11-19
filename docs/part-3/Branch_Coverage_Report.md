@@ -1,6 +1,6 @@
 # Branch coverage report
 
-Execution recorded: 2026-11-19T05:39:24.305219+00:00. Tested baseline: main 902288c with report instrumentation only. Planned course testing window: 2-6 November 2026. These are actual November 19 execution records, not historical execution claims.
+Execution recorded: 2026-11-19T06:40:15.720884+00:00. Browser follow-up: 19 November 2026. Tested baseline: main 42f9afd with report instrumentation only. Planned course testing window: 2-6 November 2026. These are actual November 19 execution records, not historical execution claims.
 
 | Scope | Covered / total branch outcomes | Coverage |
 | --- | --- | ---: |

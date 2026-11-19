@@ -8,6 +8,6 @@ test_retention_only_removes_old_completed_pairs (test_db_backup.BackupTests.test
 test_schedule_creates_initial_skips_fresh_and_replaces_stale_snapshot (test_db_backup.BackupTests.test_schedule_creates_initial_skips_fresh_and_replaces_stale_snapshot) ... ok
 
 ----------------------------------------------------------------------
-Ran 8 tests in 0.588s
+Ran 8 tests in 0.616s
 
 OK

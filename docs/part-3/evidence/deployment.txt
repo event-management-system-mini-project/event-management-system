@@ -1,0 +1,8 @@
+PASS: Fresh migrations and healthy backend, gateway and backup services
+PASS: Certificate-verified HTTPS serves the React build and routes API to SQLite
+PASS: Secure-cookie login, CSRF-protected event write and canonical registration fixture
+PASS: CSRF-free mutation denied
+PASS: Session and committed event survive backend restart on persistent storage
+PASS: Stopped backend returns a safe gateway 502
+PASS: Scheduled backups repeat and restore organizer/event/registration counts and relationships
+Evidence: docs\part-3\evidence\deployment.json

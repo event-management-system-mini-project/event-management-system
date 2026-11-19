@@ -11,4 +11,4 @@ frontend/dist/index.html                   0.42 kB │ gzip:  0.28 kB
 frontend/dist/assets/index-DcBoVH2I.css    9.63 kB │ gzip:  2.58 kB
 frontend/dist/assets/index-Cc__BaLL.js   242.94 kB │ gzip: 74.98 kB
 
-✓ built in 217ms
+✓ built in 148ms

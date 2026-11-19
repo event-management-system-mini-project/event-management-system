@@ -1,7 +1,7 @@
 {
   "metadata": {
     "issue": "BL-17",
-    "measured_at_local": "2026-11-19T11:09:24+0530",
+    "measured_at_local": "2026-11-19T12:10:20+0530",
     "platform": "win32",
     "python": "3.11.9",
     "node": "v24.20.0",
@@ -20,38 +20,38 @@
   "results": {
     "event_list_api": {
       "samples": 15,
-      "min_ms": 7.007,
-      "median_ms": 10.927,
-      "p95_ms": 27.494,
-      "max_ms": 27.494
+      "min_ms": 8.849,
+      "median_ms": 18.49,
+      "p95_ms": 32.905,
+      "max_ms": 32.905
     },
     "event_details_api": {
       "samples": 15,
-      "min_ms": 5.262,
-      "median_ms": 7.373,
-      "p95_ms": 30.018,
-      "max_ms": 30.018
+      "min_ms": 5.537,
+      "median_ms": 11.611,
+      "p95_ms": 29.99,
+      "max_ms": 29.99
     },
     "registration_api": {
       "samples": 15,
-      "min_ms": 14.213,
-      "median_ms": 20.147,
-      "p95_ms": 52.331,
-      "max_ms": 52.331
+      "min_ms": 15.579,
+      "median_ms": 24.749,
+      "p95_ms": 72.803,
+      "max_ms": 72.803
     },
     "nonowner_edit_denial_api": {
       "samples": 15,
-      "min_ms": 8.274,
-      "median_ms": 10.161,
-      "p95_ms": 28.619,
-      "max_ms": 28.619
+      "min_ms": 8.452,
+      "median_ms": 20.786,
+      "p95_ms": 36.591,
+      "max_ms": 36.591
     },
     "nonowner_delete_denial_api": {
       "samples": 15,
-      "min_ms": 6.813,
-      "median_ms": 8.279,
-      "p95_ms": 28.788,
-      "max_ms": 28.788
+      "min_ms": 6.751,
+      "median_ms": 9.012,
+      "p95_ms": 30.543,
+      "max_ms": 30.543
     }
   }
 }

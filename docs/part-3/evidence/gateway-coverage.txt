@@ -1,7 +1,7 @@
-✔ forwards API body, cookies, CSRF and status without accepting identity headers (61.8481ms)
-✔ returns safe JSON when Django is unavailable (13.7975ms)
-✔ does not proxy non-API routes (6.951ms)
-✔ private TLS gateway overwrites spoofed forwarding headers with fixed configuration (8.6539ms)
+✔ forwards API body, cookies, CSRF and status without accepting identity headers (64.6215ms)
+✔ returns safe JSON when Django is unavailable (16.8503ms)
+✔ does not proxy non-API routes (13.1098ms)
+✔ private TLS gateway overwrites spoofed forwarding headers with fixed configuration (13.2139ms)
 ℹ tests 4
 ℹ suites 0
 ℹ pass 4
@@ -9,7 +9,7 @@
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 209.6441
+ℹ duration_ms 271.828
 ℹ start of coverage report
 ℹ ------------------------------------------------------------
 ℹ file        | line % | branch % | funcs % | uncovered lines

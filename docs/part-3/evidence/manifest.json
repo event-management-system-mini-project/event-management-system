@@ -1,5 +1,5 @@
 {
-  "baseline": "902288c",
+  "baseline": "42f9afd",
   "python": "3.11.9",
   "node": "v24.20.0",
   "execution_date": "2026-11-19",
@@ -8,5 +8,16 @@
   "system_pass": 12,
   "system_fail": 7,
   "scope": "Required Part 3 testing and reports only. Optional Sprint 3 development excluded.",
-  "document_QA": "Word PDF export and Poppler PNG inspection; packaged renderer lacked LibreOffice."
+  "document_QA": "Word PDF export and Poppler PNG inspection; packaged renderer lacked LibreOffice.",
+  "finalized_at": "2026-11-19T07:50:45.853826+00:00",
+  "test_case_results": {
+    "PASS": 47,
+    "FAIL": 7,
+    "BLOCKED": 1
+  },
+  "original_plan_rows_filled": 47,
+  "browser_checks": 16,
+  "browser_pass": 15,
+  "browser_fail": 1,
+  "deployment": "Fresh Docker smoke passed"
 }

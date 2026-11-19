@@ -1,0 +1,13 @@
+{
+  "executed_at": "2026-11-19T06:39:57.569195+00:00",
+  "checks": [
+    "Fresh migrations and healthy backend, gateway and backup services",
+    "Certificate-verified HTTPS serves the React build and routes API to SQLite",
+    "Secure-cookie login, CSRF-protected event write and canonical registration fixture",
+    "CSRF-free mutation denied",
+    "Session and committed event survive backend restart on persistent storage",
+    "Stopped backend returns a safe gateway 502",
+    "Scheduled backups repeat and restore organizer/event/registration counts and relationships"
+  ],
+  "status": "passed"
+}

@@ -104,14 +104,14 @@ test_commit_failure_never_returns_created_event (modules.organizer.tests.test_ev
 test_csrf_protects_event_creation (modules.organizer.tests.test_events.CommitFailureTests.test_csrf_protects_event_creation) ... ok
 
 ----------------------------------------------------------------------
-Ran 79 tests in 35.286s
+Ran 79 tests in 38.310s
 
 OK
 Destroying test database for alias 'default' ('file:memorydb_default?mode=memory&cache=shared')...
 
   Applying sessions.0001_initial... OK
 System check identified no issues (0 silenced).
-anonymous delete denial: 1.5 ms
-nonowner delete denial: 1.7 ms
-anonymous edit denial: 1.6 ms
-nonowner edit denial: 1.8 ms
+anonymous delete denial: 0.8 ms
+nonowner delete denial: 2.1 ms
+anonymous edit denial: 0.9 ms
+nonowner edit denial: 3.0 ms

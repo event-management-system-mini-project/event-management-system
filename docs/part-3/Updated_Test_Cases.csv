@@ -5,136 +5,136 @@ REQ1_UT_01,Event Creation,Create an event with all valid details,Organizer is lo
 Description: Annual tech event
 Date: 20-12-2027
 Time: 10:00 AM
-Location: PES University",Event should be created successfully.,Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
+Location: PES University",Event should be created successfully.,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
 REQ1_UT_02,Event Creation,Validate missing event name,Organizer is logged in,"1. Open Create Event.
 2. Leave name empty.
 3. Fill other fields.
-4. Submit.",Name: blank; other fields valid,Creation is rejected; the name field shows a required-field error.,Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
+4. Submit.",Name: blank; other fields valid,Creation is rejected; the name field shows a required-field error.,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
 REQ1_UT_03,Event Creation,Validate missing event description,Organizer is logged in,"1. Open Create Event.
 2. Leave description empty.
 3. Fill other fields.
-4. Submit.",Description: blank; other fields valid,Creation is rejected; the description field shows a required-field error.,Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
+4. Submit.",Description: blank; other fields valid,Creation is rejected; the description field shows a required-field error.,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
 REQ1_UT_04,Event Creation,"Validate missing date, time, or location",Organizer is logged in,"1. Open Create Event.
 2. Leave one required field empty.
-3. Submit.",Date/time/location: blank individually,"Creation is rejected; the missing date, time, or location field shows a field-level error.",Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
+3. Submit.",Date/time/location: blank individually,"Creation is rejected; the missing date, time, or location field shows a field-level error.",Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
 REQ1_UT_05,Event Validation,Reject event name longer than 100 characters,Organizer is logged in,"1. Open Create Event.
 2. Enter a 101-character name and otherwise valid details.
-3. Submit.",Name: 101 'A' characters; other fields valid,Creation is rejected with a name field error; no event is saved.,Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
+3. Submit.",Name: 101 'A' characters; other fields valid,Creation is rejected with a name field error; no event is saved.,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
 REQ1_UT_06,Event Validation,Reject a past event date or time,Organizer is logged in,"1. Open Create Event.
 2. Enter a date/time earlier than the test execution time.
-3. Submit.",Date/time: one hour before execution; other fields valid,Creation is rejected with a date/time field error; no event is saved.,Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
+3. Submit.",Date/time: one hour before execution; other fields valid,Creation is rejected with a date/time field error; no event is saved.,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
 REQ1_IT_01,Event Form + Backend,Verify event details are sent from frontend to backend,Organizer is logged in,"1. Open Create Event.
 2. Enter valid details.
-3. Submit.",Valid event details,Frontend should send the event data to the backend and the event should be processed successfully.,Full browser procedure not rerun in this reporting execution. Module/API evidence is available.,NOT RUN
+3. Submit.",Valid event details,Frontend should send the event data to the backend and the event should be processed successfully.,Real create form posted valid event data; public and owner lists updated.,PASS
 REQ1_IT_02,Backend + Database,Verify created event is stored in database,Organizer is logged in and database is available,"1. Enter valid event details.
 2. Submit.
-3. Verify event record.",Tech Fest with valid description/date/time/location,Event information should be saved correctly in the database.,Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
+3. Verify event record.",Tech Fest with valid description/date/time/location,Event information should be saved correctly in the database.,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
 REQ1_ST_01,Complete Event Creation,Verify complete organizer event-creation workflow,Organizer has access to system,"1. Login.
 2. Select Create Event.
 3. Enter details.
 4. Submit.
-5. Open organizer event list.",Valid event details,Event should be successfully created and appear in the organizer's event list.,Full browser procedure not rerun in this reporting execution. Module/API evidence is available.,NOT RUN
+5. Open organizer event list.",Valid event details,Event should be successfully created and appear in the organizer's event list.,"Login and real browser creation succeeded; dated 2099-02-02 12:00, visible in owner and public lists.",PASS
 REQ1_ST_02,Complete Event Creation,Verify system prevents creation with incomplete information,Organizer has access to system,"1. Login.
 2. Select Create Event.
 3. Leave required information missing.
-4. Submit.",Missing event name/location,System should prevent creation and display a clear error message.,Full browser procedure not rerun in this reporting execution. Module/API evidence is available.,NOT RUN
+4. Submit.",Missing event name/location,System should prevent creation and display a clear error message.,Empty create form rejected with field errors.,PASS
 REQ2_UT_01,Event Edit,Edit an existing event with valid details,Organizer has created an event,"1. Open existing event.
 2. Select Edit.
 3. Change details.
-4. Save.",Change location from PES Block 1 to PES Block 2,Event should be updated successfully.,Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
+4. Save.",Change location from PES Block 1 to PES Block 2,Event should be updated successfully.,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
 REQ2_UT_02,Event Delete,Delete an event created by the organizer,Organizer has created an event,"1. Open event.
 2. Select Delete.
-3. Confirm deletion.",Existing event,Event should be removed successfully.,Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
+3. Confirm deletion.",Existing event,Event should be removed successfully.,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
 REQ2_UT_03,Event Edit,Validate incomplete edited event details,Organizer has created an event,"1. Select Edit.
 2. Remove a required detail.
-3. Save.",Event name or location: blank,System should reject the invalid/incomplete update and display an appropriate error.,Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
+3. Save.",Event name or location: blank,System should reject the invalid/incomplete update and display an appropriate error.,Incomplete edited name rejected with a required-field error.,PASS
 REQ2_UT_04,Event Ownership,Verify organizer cannot manage another organizer's event,Two organizers and their events exist,"1. Login as Organizer B.
-2. Attempt to edit/delete Organizer A's event.",Organizer A's event,Edit and delete are denied with an authorization error; the event remains unchanged.,Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
+2. Attempt to edit/delete Organizer A's event.",Organizer A's event,Edit and delete are denied with an authorization error; the event remains unchanged.,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
 REQ2_IT_01,Edit + Backend + Database,Verify edited event information is updated in the database,Organizer owns an existing event,"1. Open event.
 2. Edit details.
 3. Save.
-4. Verify stored data.",Updated event location/time,Updated information should be sent to backend and stored correctly.,Full browser procedure not rerun in this reporting execution. Module/API evidence is available.,NOT RUN
+4. Verify stored data.",Updated event location/time,Updated information should be sent to backend and stored correctly.,Real browser edit/delete changed both owner and public lists; backend persistence/rollback assertions passed.,PASS
 REQ2_IT_02,Delete + Backend + Database,Verify deleting an event removes it from the system,Organizer owns an existing event,"1. Select event.
 2. Delete it.
 3. Confirm.
-4. Check event list.",Existing event,Event should be removed from the database and no longer appear in the event list.,Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
+4. Check event list.",Existing event,Event should be removed from the database and no longer appear in the event list.,Real browser edit/delete changed both owner and public lists; backend persistence/rollback assertions passed.,PASS
 REQ2_ST_01,Complete Event Management,Verify complete edit workflow,Organizer owns an event,"1. Login.
 2. Open event.
 3. Edit details.
 4. Save.
-5. Reopen event.",Updated event details,Updated event details should be displayed correctly throughout the system.,Full browser procedure not rerun in this reporting execution. Module/API evidence is available.,NOT RUN
+5. Reopen event.",Updated event details,Updated event details should be displayed correctly throughout the system.,Changed location through edit form; Updated Hall appeared in both public and owner lists.,PASS
 REQ2_ST_02,Complete Event Management,Verify complete delete and access-control workflow,Two organizers with separate events exist,"1. Login as owner.
 2. Delete own event.
 3. Verify removal.
-4. Login as another organizer and attempt to manage another user's event.",Own event + another organizer's event,"Owner should be able to delete their event, while another organizer should not be allowed to manage someone else's event.",Full browser procedure not rerun in this reporting execution. Module/API evidence is available.,NOT RUN
+4. Login as another organizer and attempt to manage another user's event.",Own event + another organizer's event,"Owner should be able to delete their event, while another organizer should not be allowed to manage someone else's event.",Confirmed owner delete removed event; nonowner denial verified separately by real backend tests.,PASS
 REQ2_ST_03,Event Ownership,Return owner authorization error within 1 second,Organizer A owns an event; Organizer B is logged in,"1. As Organizer B, request edit of A's event.
 2. Measure response time.
-3. Repeat for delete.",Organizer A event ID; Organizer B credentials,Both operations return an authorization error within 1 second; the event remains unchanged.,Full browser procedure not rerun in this reporting execution. Module/API evidence is available.,NOT RUN
-REQ3_UT_01,Event Listing,View list of upcoming events,Events exist in system,1. Open events page,Valid upcoming events in DB,"Only upcoming events appear, sorted by date; each shows name, date, time, and location.",Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
+3. Repeat for delete.",Organizer A event ID; Organizer B credentials,Both operations return an authorization error within 1 second; the event remains unchanged.,Real authenticated nonowner edit/delete denied; 15-sample gateway benchmark p95 below 1 second for both; records unchanged in backend tests.,PASS
+REQ3_UT_01,Event Listing,View list of upcoming events,Events exist in system,1. Open events page,Valid upcoming events in DB,"Only upcoming events appear, sorted by date; each shows name, date, time, and location.",Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
 REQ3_UT_02,Event Details,View details of a selected event,At least one event exists,1. Click an event from the list,Existing event,"The selected event shows name, description, date, time, location, and its current registration count.","Public details API works, but no selected-event details screen is connected.",FAIL
-REQ3_UT_03,Event Listing,Empty state - no upcoming events,No events in system,1. Open events page,No events,System shows an appropriate 'no events' message instead of an error,Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
-REQ3_UT_04,Event Details,Attempt to view a non-existent or invalid event,-,1. Navigate to an invalid event URL/ID,Invalid event ID,"System shows an appropriate error, not a crash",Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
+REQ3_UT_03,Event Listing,Empty state - no upcoming events,No events in system,1. Open events page,No events,System shows an appropriate 'no events' message instead of an error,Empty upcoming list displays a clear message without an error.,PASS
+REQ3_UT_04,Event Details,Attempt to view a non-existent or invalid event,-,1. Navigate to an invalid event URL/ID,Invalid event ID,"System shows an appropriate error, not a crash",Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
 REQ3_UT_05,Event Listing,Sort upcoming events by date,At least three upcoming events exist out of creation order,"1. Open events page.
-2. Compare displayed order with event dates.","Events on 10, 12, and 15 days after execution, inserted in reverse order","Events appear in ascending date order, independent of insertion order.",Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
-REQ3_IT_01,Frontend + Backend,Frontend correctly fetches event list from backend,"Backend running, events exist",1. Load events page,Valid events,Frontend displays exactly the events returned by the API,Full browser procedure not rerun in this reporting execution. Module/API evidence is available.,NOT RUN
-REQ3_IT_02,Backend + Database,Backend retrieves correct event details from database,Event exists in DB,1. Request details for a specific event ID,Existing event ID,Correct event record is returned from the database,Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
+2. Compare displayed order with event dates.","Events on 10, 12, and 15 days after execution, inserted in reverse order","Events appear in ascending date order, independent of insertion order.",Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
+REQ3_IT_01,Frontend + Backend,Frontend correctly fetches event list from backend,"Backend running, events exist",1. Load events page,Valid events,Frontend displays exactly the events returned by the API,Real browser displayed created/edited public event data and refreshed after deletion.,PASS
+REQ3_IT_02,Backend + Database,Backend retrieves correct event details from database,Event exists in DB,1. Request details for a specific event ID,Existing event ID,Correct event record is returned from the database,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
 REQ3_IT_03,Event Details + Database,Show current registration count,One event with two confirmed registrations exists,"1. Open event details.
 2. Check count.
 3. Add one valid registration.
-4. Refresh details.",Existing event; two initial registrants; one new email,Count is 2 before registration and 3 afterward; no attendee names or emails are exposed.,Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
+4. Refresh details.",Existing event; two initial registrants; one new email,Count is 2 before registration and 3 afterward; no attendee names or emails are exposed.,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
 REQ3_ST_01,Complete Browse Flow,End-to-end: browse list then view details,Events exist,"1. Open events page.
 2. Select an event.
-3. View details.",Valid event,"The attendee sees the sorted upcoming list and correct details, including current registration count, within 2 seconds of selection.","Public details API works, but no selected-event details screen is connected.",FAIL
-REQ3_ST_02,Complete Browse Flow,Verify only upcoming (not past) events are listed,Mix of past and future events exist,1. Open events page,Past + future events,Only upcoming events appear in the list,Full browser procedure not rerun in this reporting execution. Module/API evidence is available.,NOT RUN
+3. View details.",Valid event,"The attendee sees the sorted upcoming list and correct details, including current registration count, within 2 seconds of selection.",Inspected public cards: no event-details link or screen exists.,FAIL
+REQ3_ST_02,Complete Browse Flow,Verify only upcoming (not past) events are listed,Mix of past and future events exist,1. Open events page,Past + future events,Only upcoming events appear in the list,"After the only remaining synthetic event was made past, browser displayed No upcoming events; no past event card was shown.",PASS
 REQ4_UT_01,Registration,Register with valid name and email,Upcoming event exists; attendee needs no account. Use synthetic name/email. Organizer sessions require CSRF.,"1. Select Register for the event from Upcoming events.
 2. Fill form.
 3. Submit.","Name: Asha Rao
-Email: asha@example.com",One registration is stored and a confirmation appears within 3 seconds.,Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
+Email: asha@example.com",One registration is stored and a confirmation appears within 3 seconds.,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
 REQ4_UT_02,Registration,Missing name,Upcoming event exists; attendee needs no account. Use synthetic name/email. Organizer sessions require CSRF.,"1. Leave name blank.
-2. Submit.",Name: blank; valid email,System rejects submission and shows an error for the missing name,Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
+2. Submit.",Name: blank; valid email,System rejects submission and shows an error for the missing name,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
 REQ4_UT_03,Registration,Invalid or missing email format,Upcoming event exists; attendee needs no account. Use synthetic name/email. Organizer sessions require CSRF.,"1. Enter invalid email format.
-2. Submit.",Email: not-an-email,System rejects submission and shows an email validation error,Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
-REQ4_UT_04,Duplicate Prevention,Reject duplicate registration with same email for same event,Upcoming event exists; attendee needs no account. Use synthetic name/email. Organizer sessions require CSRF.,1. Submit registration again with the same email for the same event.,Same email as existing registration,System rejects with a duplicate-registration error; no new record is created,Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
+2. Submit.",Email: not-an-email,System rejects submission and shows an email validation error,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
+REQ4_UT_04,Duplicate Prevention,Reject duplicate registration with same email for same event,Upcoming event exists; attendee needs no account. Use synthetic name/email. Organizer sessions require CSRF.,1. Submit registration again with the same email for the same event.,Same email as existing registration,System rejects with a duplicate-registration error; no new record is created,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
 REQ4_UT_05,Registration Validation,Reject attendee name longer than 100 characters,Upcoming event exists; attendee needs no account. Use synthetic name/email. Organizer sessions require CSRF.,"1. Open registration form.
 2. Enter a 101-character name and valid email.
-3. Submit.",Name: 101 'A' characters; email: length@example.com,Registration is rejected with a name validation error; no record is saved.,Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
-REQ4_IT_01,Frontend + Backend,Registration data sent correctly to backend,Upcoming event exists; attendee needs no account. Use synthetic name/email. Organizer sessions require CSRF.,1. Fill and submit form.,Valid name/email,Backend receives the correct payload and processes it,"42-test component suite covers mounted form, API payload, duplicate error and count refresh. Real guest/CSRF registration was verified on 19 November in PR 39; complete browser flow not rerun here.",PARTIAL
-REQ4_IT_02,Backend + Database,Registration record saved in database,Upcoming event exists; attendee needs no account. Use synthetic name/email. Organizer sessions require CSRF.,1. Submit valid registration.,Valid name/email,Record is correctly stored with its event association,Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
-REQ4_IT_03,Backend + Database,Backend checks for duplicates before saving,Upcoming event exists; attendee needs no account. Use synthetic name/email. Organizer sessions require CSRF.,1. Submit registration with the same email.,Duplicate email,Backend detects the existing record and blocks the insert,Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
+3. Submit.",Name: 101 'A' characters; email: length@example.com,Registration is rejected with a name validation error; no record is saved.,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
+REQ4_IT_01,Frontend + Backend,Registration data sent correctly to backend,Upcoming event exists; attendee needs no account. Use synthetic name/email. Organizer sessions require CSRF.,1. Fill and submit form.,Valid name/email,Backend receives the correct payload and processes it,Browser form posted name/email to real gateway/backend and showed confirmed count.,PASS
+REQ4_IT_02,Backend + Database,Registration record saved in database,Upcoming event exists; attendee needs no account. Use synthetic name/email. Organizer sessions require CSRF.,1. Submit valid registration.,Valid name/email,Record is correctly stored with its event association,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
+REQ4_IT_03,Backend + Database,Backend checks for duplicates before saving,Upcoming event exists; attendee needs no account. Use synthetic name/email. Organizer sessions require CSRF.,1. Submit registration with the same email.,Duplicate email,Backend detects the existing record and blocks the insert,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
 REQ4_ST_01,Complete Registration Flow,End-to-end successful registration,Upcoming event exists; attendee needs no account. Use synthetic name/email. Organizer sessions require CSRF.,"1. Browse events.
 2. Select Register for the event.
 3. Register.
-4. See confirmation.",Valid name/email,Registration completes and a confirmation is shown,"42-test component suite covers mounted form, API payload, duplicate error and count refresh. Real guest/CSRF registration was verified on 19 November in PR 39; complete browser flow not rerun here.",PARTIAL
+4. See confirmation.",Valid name/email,Registration completes and a confirmation is shown,Guest inline registration confirms success and refreshes count to one.,PASS
 REQ4_ST_02,Complete Duplicate-Prevention Flow,Full duplicate rejection workflow,Upcoming event exists; attendee needs no account. Use synthetic name/email. Organizer sessions require CSRF.,"1. Register once (success).
-2. Attempt a second registration with the same email for the same event.",Same email twice,"First attempt succeeds, second is rejected with a clear error; only one database record exists","42-test component suite covers mounted form, API payload, duplicate error and count refresh. Real guest/CSRF registration was verified on 19 November in PR 39; complete browser flow not rerun here.",PARTIAL
+2. Attempt a second registration with the same email for the same event.",Same email twice,"First attempt succeeds, second is rejected with a clear error; only one database record exists",Repeated email rejected with count unchanged at one.,PASS
 NFR_01,Event Listing Performance,Verify that the event list page loads within 2 seconds under normal conditions.,Application is running and upcoming events are available.,"1. Open the Event Management System.
 2. Navigate to the event list page.
-3. Measure the page loading time.",Normal network conditions with upcoming events available.,The upcoming event list loads in under 2 seconds under normal conditions.,Local API benchmark passes numeric threshold; full browser action-to-visible timing not measured.,NOT RUN
+3. Measure the page loading time.",Normal network conditions with upcoming events available.,The upcoming event list loads in under 2 seconds under normal conditions.,Local page reload to observed event list; automation-inclusive elapsed time. Observed 230 ms.,PASS
 NFR_02,Registration Performance,Verify that registration submission and confirmation completes within 3 seconds.,Event is available and the registration form is accessible.,"1. Open an available event.
 2. Enter valid attendee details.
 3. Submit the registration form.
 4. Measure the time until confirmation is displayed.","Name: Rohith Kumar
-Email: rohith@example.com",Registration is stored and confirmation appears in under 3 seconds.,Local API benchmark passes numeric threshold; full browser action-to-visible timing not measured.,NOT RUN
+Email: rohith@example.com",Registration is stored and confirmation appears in under 3 seconds.,Local submit to observed confirmation; automation-inclusive upper bound. Observed 320 ms.,PASS
 NFR_03,Data Integrity,Retain confirmed registration after restart,Application and database are available,"1. Register successfully.
 2. Restart the application.
-3. Check the event's registrations as its organizer.",Unique name and email for an existing event,The confirmed registration remains stored and linked to the event.,Automated process restart/persistence assertions pass; owner-list browser verification blocked by authorization defect.,PARTIAL
+3. Check the event's registrations as its organizer.",Unique name and email for an existing event,The confirmed registration remains stored and linked to the event.,Current Docker smoke confirmed persisted data/session after backend restart; separate-process database tests retained committed registration relationships.,PASS
 NFR_04,Backup,Verify database backup interval,Backup process is configured and logs are accessible,"1. Inspect backup schedule and recent successful backup timestamps.
-2. Verify a recoverable copy exists.",At least two consecutive backup records,Successful backups occur at intervals no greater than 24 hours and a copy is available for recovery.,"23-hour configured schedule, accelerated repeated backup and isolated restore pass; continuous 24-hour host observation not performed.",PARTIAL
+2. Verify a recoverable copy exists.",At least two consecutive backup records,Successful backups occur at intervals no greater than 24 hours and a copy is available for recovery.,"23-hour configuration, two accelerated scheduled snapshots and isolated restore passed. Continuous 24-hour operating evidence is unavailable in this short run.",BLOCKED
 SEC_01,Organizer Authentication,Reject unauthenticated event management,Valid event exists; no organizer session,"1. Attempt event creation.
 2. Attempt edit.
-3. Attempt delete.",No session or token; otherwise valid requests,"Every action is rejected with an authentication error; no event is created, changed, or deleted.",Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
+3. Attempt delete.",No session or token; otherwise valid requests,"Every action is rejected with an authentication error; no event is created, changed, or deleted.",Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
 SEC_02,Organizer Authorization,Restrict edit and delete to event owner,Organizer A owns an event; Organizer B is logged in,"1. As B, attempt to edit A's event.
-2. As B, attempt to delete A's event.",Organizer A event ID; Organizer B credentials,Both requests receive an authorization error; A's event remains unchanged.,Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
+2. As B, attempt to delete A's event.",Organizer A event ID; Organizer B credentials,Both requests receive an authorization error; A's event remains unchanged.,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
 SEC_03,Attendee Privacy,Hide registrant names and emails from attendees,Event has registrations; attendee accesses public views,"1. Open event list.
 2. Open event details.
-3. Inspect public API responses.",Event with two named registrants,No registrant name or email is displayed or returned to the attendee; registration count may be shown.,Relevant automated backend/component assertions passed; see Unit_Test_Report.md. Full original UI procedure is not implied.,MODULE PASS
+3. Inspect public API responses.",Event with two named registrants,No registrant name or email is displayed or returned to the attendee; registration count may be shown.,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
 SEC_04,Registrant Access,Allow only event owner to view full registrant list,Organizer A owns an event; Organizer B is logged in,"1. As A, open the event's registrant list.
 2. As B, request the same list.",Event with two registrants,A sees the list; B receives an authorization error and no attendee personal data.,Anonymous forged organizer query returns 200; actual session owner without supplied ID gets 403.,FAIL
-P3_01,IST validation,IST validation,Disposable synthetic fixtures; see executable checks.,"Submit future/past event times under IST, UTC and Pacific browser zones.",Synthetic records only,Equivalent instants yield the same validation outcome.,Fixed-clock frontend validation tests pass.,MODULE PASS
-P3_02,Registration CSRF,Registration CSRF,Disposable synthetic fixtures; see executable checks.,Register while signed in using the shared API helper.,Synthetic records only,Current CSRF token and same-origin credentials are sent.,api.test.js assertion passes.,MODULE PASS
-P3_03,Registration count,Registration count,Disposable synthetic fixtures; see executable checks.,Submit from the inline event-list form and refresh counts.,Synthetic records only,Confirmation remains visible and count increases after confirmed success.,RegistrationForm.test.jsx passes.,MODULE PASS
+P3_01,IST validation,IST validation,Disposable synthetic fixtures; see executable checks.,"Submit future/past event times under IST, UTC and Pacific browser zones.",Synthetic records only,Equivalent instants yield the same validation outcome.,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
+P3_02,Registration CSRF,Registration CSRF,Disposable synthetic fixtures; see executable checks.,Register while signed in using the shared API helper.,Synthetic records only,Current CSRF token and same-origin credentials are sent.,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
+P3_03,Registration count,Registration count,Disposable synthetic fixtures; see executable checks.,Submit from the inline event-list form and refresh counts.,Synthetic records only,Confirmation remains visible and count increases after confirmed success.,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
 P3_04,Privacy bypass,Privacy bypass,Disposable synthetic fixtures; see executable checks.,Request registrants anonymously with the owner UUID as organizer_id.,Synthetic records only,Deny access; return no attendee information.,forged_identity_denied returns 200.,FAIL
 P3_05,Null input,Null input,Disposable synthetic fixtures; see executable checks.,POST name=null and a valid email to the registration endpoint.,Synthetic records only,Return validation 400 and no new row.,null_name_validation returns 500.,FAIL
 P3_06,Database failure,Database failure,Disposable synthetic fixtures; see executable checks.,Inject an OperationalError during registration storage.,Synthetic records only,Return recoverable 503 without success acknowledgement.,database_failure returns 500.,FAIL
 P3_07,Route agreement,Route agreement,Disposable synthetic fixtures; see executable checks.,Call the documented registration and frontend registrant-list routes.,Synthetic records only,Documented route succeeds and frontend helper resolves correctly.,Both canonical registration and slashless registrants route return 404.,FAIL
-P3_08,Backup integrity,Backup integrity,Disposable synthetic fixtures; see executable checks.,"Back up committed WAL data, reject corrupt snapshots and restore separately.",Synthetic records only,Committed rows retained; pending rows excluded; live database not overwritten.,8 backup tests and canonical backup smoke pass.,MODULE PASS
+P3_08,Backup integrity,Backup integrity,Disposable synthetic fixtures; see executable checks.,"Back up committed WAL data, reject corrupt snapshots and restore separately.",Synthetic records only,Committed rows retained; pending rows excluded; live database not overwritten.,Automated module assertions passed; backend-tests.txt/frontend-tests.txt and coverage reports record the run.,PASS
